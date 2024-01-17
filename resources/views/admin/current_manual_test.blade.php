@@ -41,37 +41,44 @@
                     <form action="{{ route('manual-tests.setQuestion') }}" method="post">
                         @csrf
                         <div class="row">
-                            <div class="col">
-                                <div class="form-group">
-                                    <input type="hidden" name="test_id" value="{{ $test->id }}">
-                                    <select name="question_id" class="form-control" placeholder="Question">
-                                        @foreach ($testQuestions as $question)
-                                            <option value="{{ $question->id }}">{{ $question->name }}</option>
-                                        @endforeach
-                                    </select>
+                            @if ($testQuestions->isNotEmpty())
+                                <div class="col">
+                                    <div class="form-group">
+                                        <input type="hidden" name="test_id" value="{{ $test->id }}">
+                                        <select name="question_id" class="form-control" placeholder="Question">
+                                            @foreach ($testQuestions as $question)
+                                                <option value="{{ $question->id }}">{{ $question->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col">
-                                <div class="form-group">
-                                    <button class=" btn btn-primary" type="submit">Set</button>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <button class="btn btn-primary" type="submit">Set</button>
+                                    </div>
                                 </div>
-                            </div>
+                            @else
+                                <p>No more questions</p>
+                            @endif
                         </div>
-                    </form>
-                    <form action="{{ route('manual-test.endTest', ['test' => $test->id]) }}" method="get">
-                        <div class="form-group">
-                            <button class=" btn btn-danger" type="submit">End Test</button>
-                        </div>
-                    </form>
                 </div>
+                </form>
+                <form action="{{ route('manual-test.endTest', ['test' => $test->id]) }}" method="get">
+                    <div class="form-group">
+                        <button class=" btn btn-danger" type="submit">End Test</button>
+                    </div>
+                </form>
             </div>
         </div>
-        <div class="row">
-            @include('admin.manual_test_teams_view')
-        </div>
+    </div>
+    <div class="row">
+        @include('admin.manual_test_teams_view')
+    </div>
     </div>
     {{-- </section> --}}
     {{-- current teams view --}}
+
+@endsection
 
 @section('scripts')
     <script>
@@ -130,6 +137,4 @@
             });
         });
     </script>
-@endsection
-
 @endsection

@@ -11,14 +11,20 @@ class HandleTeamsController extends Controller
     public function index()
     {
         $team = auth()->id();
+
+        $currentTests = Test::with('group.teams')->whereHas('group.teams', function ($query) use ($team) {
+            $query->where('teams.id', $team);
+        })->where('status', Test::CURRENT)->orderBy('start_time', 'desc')->get();
+
         $pastTests = Test::with('group.teams')->whereHas('group.teams', function ($query) use ($team) {
             $query->where('teams.id', $team);
-        })->where('status', Test::PAST)->orderBy('start_time','desc')->get();
+        })->where('status', Test::PAST)->orderBy('start_time', 'desc')->get();
+
         $commingTests = Test::with('group.teams')->whereHas('group.teams', function ($query) use ($team) {
             $query->where('teams.id', $team);
-        })->where('status', Test::COMMING)->orderBy('start_time','desc')->get();
+        })->where('status', Test::COMMING)->orderBy('start_time', 'desc')->get();
 
-        return view('teams.index', compact('pastTests', 'commingTests'));
+        return view('teams.index', compact('pastTests', 'commingTests','currentTests'));
     }
     public function viewTest(Test $test)
     {

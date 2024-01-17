@@ -1,4 +1,7 @@
 <div class="container-fluid">
+    <br>
+    <hr class="bold">
+    <h2 class="text-center">Current Teams view</h2>
     <div class="row">
         <div class="col">
             <div class="test-info text-center">
@@ -10,10 +13,10 @@
             </div>
         </div>
     </div>
-    <div class="testEnded mb-5">
-        <div class="h-4 w-4">
-            <p> Test Have been ended </p>
-            <p> Moved to groups standings view </p>
+    <div class=" mb-5">
+        <div class="testEnded alert alert-danger text-center">
+            <p class="mb-0">Test has ended</p>
+            <p>Moved to groups standings view</p>
         </div>
         {{-- question form start --}}
         <div class="test-questions">
@@ -89,11 +92,10 @@
         var answerSecondsRemaining = 0;
         var answerSubmitted = false;
 
-
         document.querySelector('.test-questions').style.display = 'none';
-
-        document.querySelector('.testEnded').style.display = 'none';
         document.querySelector('.answer-info').style.display = 'none';
+        document.querySelector('.testEnded').style.display = 'none';
+
 
         function updateCountdown() {
             var startTime = new Date('{{ $test->start_time }}').getTime();
@@ -118,10 +120,9 @@
 
                 questionRemaining = Math.max(remainingTime, 0);
 
-                // Set a timeout to call getQuestion after remainingTime has passed
                 setTimeout(function() {
                     getQuestion();
-                }, remainingTime * 1000); // Convert seconds to milliseconds
+                }, questionRemaining * 1000);
 
             }
         }
@@ -135,42 +136,40 @@
         }
 
         function correctAnswer(questionId) {
-            // Create a new FormData instance
             var formData = new FormData();
-
-            // Append the necessary data to formData
             formData.append('question_id', questionId);
-            formData.append('_token', '{{ csrf_token() }}'); // Add CSRF token to the form data
+            formData.append('_token', '{{ csrf_token() }}');
 
             var myRequest = new XMLHttpRequest();
             myRequest.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
                     var responseData = JSON.parse(this.responseText);
+
+
                     document.getElementById('answer-question').innerHTML = responseData.data.name;
                     document.getElementById('correct-answer').innerHTML = 'Correct Answer: ' + responseData.data
                         .correct_answer;
                     document.getElementById('corrcorrect-team-answer').innerHTML = 'First Correct Team Answer: ' +
                         responseData.data.corrcorrectTeamAnswer;
 
-                    // Hide question and show answer
+
                     document.querySelector('.test-questions').style.display = 'none';
                     document.querySelector('.answer-info').style.display = 'block';
 
-                    // Set timer to load the next question after answer_time
                     answerSecondsRemaining = {{ $test->answer_time }};
                     updateAnswerTimerDisplay(answerSecondsRemaining);
+
                     answerTimer = setInterval(function() {
                         updateAnswerTimerDisplay(--answerSecondsRemaining);
                         if (answerSecondsRemaining <= 0) {
                             clearInterval(answerTimer);
-                            getQuestion(); // Move to the next question
+                            getQuestion();
                         }
                     }, 1000);
                 }
                 answerSubmitted = true;
             };
 
-            // Append the questionId and testId to the route
             var route =
                 "{{ route('manual-test.answer', ['test' => $test->id, 'question' => ':question_id']) }}";
             route = route.replace(':question_id', questionId);
@@ -178,6 +177,19 @@
             myRequest.open("GET", route);
             myRequest.send(formData);
         }
+
+        // Define a function to call getQuestion
+        function startQuestionInterval() {
+            getQuestion(); // Call getQuestion immediately
+
+            // Set up an interval to call getQuestion every second
+            setInterval(function() {
+                getQuestion();
+            }, 1000);
+        }
+
+        // Call the startQuestionInterval function to initiate the process
+
 
 
         function getQuestion() {
@@ -188,15 +200,26 @@
                     if (responseData.data.question_id === null) {
                         document.querySelector('.testEnded').style.display = 'block';
 
-                        // Redirect user to the standing route
-                        // window.location.href = "{{ route('handle-teams.index', ['group' => $test->group_id]) }}";
                         // window.location.href = "{{ route('handle-teams.index') }}";
-                        return; // Exit the function to prevent further execution
+                        return;
                     }
-                    var questionId = responseData.data.id; // Extract the questionId
 
-                    console.log(responseData.data.question_id);
+                    var startTime = new Date(responseData.data.question_start_at).getTime();
+                    var endTime = startTime + ({{ $test->question_time }} * 1000);
+                    var remainingTime = endTime - new Date().getTime();
+                    remainingTime = Math.ceil(remainingTime / 1000);
+                    questionSecondsRemaining = Math.max(remainingTime, 0)
 
+                    if (questionSecondsRemaining == 0) {
+                        document.querySelector('.test-questions').style.display = 'none';
+                        document.querySelector('.answer-info').style.display = 'none';
+                        setTimeout(function() {
+                            getQuestion();
+                        }, 1000)
+                        return;
+                    }
+
+                    var questionId = responseData.data.id;
                     document.getElementById('question').innerHTML = responseData.data.name;
                     document.getElementById('question_id').value = responseData.data.question_id;
                     document.getElementById('label-a').innerHTML = 'a: ' + responseData.data.a;
@@ -204,18 +227,19 @@
                     document.getElementById('label-c').innerHTML = 'c: ' + responseData.data.c;
                     document.getElementById('label-d').innerHTML = 'd: ' + responseData.data.d;
 
-                    // Show question and hide answer
+
                     document.querySelector('.test-questions').style.display = 'block';
                     document.querySelector('.answer-info').style.display = 'none';
 
                     var startTime = new Date(responseData.data.question_start_at).getTime();
                     var endTime = startTime + ({{ $test->question_time }} * 1000);
-                    var remainingTime = endTime - new Date().getTime(); // Use client's timestamp
+                    var remainingTime = endTime - new Date().getTime();
                     remainingTime = Math.ceil(remainingTime / 1000);
 
-                    questionSecondsRemaining = Math.max(remainingTime, 0); // Ensure non-negative value
+                    questionSecondsRemaining = Math.max(remainingTime, 0)
                     updateQuestionTimerDisplay(questionSecondsRemaining);
-                    // Pass the questionId when calling correctAnswer
+
+
                     questionTimer = setInterval(function() {
                         updateQuestionTimerDisplay(--questionSecondsRemaining);
                         if (questionSecondsRemaining <= 0) {
@@ -223,14 +247,12 @@
                             correctAnswer(questionId);
                         }
                     }, 1000);
-
                 }
             };
 
             myRequest.open("GET", "{{ route('manual-test.question', ['test' => $test->id]) }}");
             myRequest.send();
 
-            // Clear the previous timers
             clearInterval(questionTimer);
             clearInterval(answerTimer);
             answerSubmitted = false;
@@ -287,6 +309,60 @@
             });
         }
         // submitting form end
+        function updateTestData(testId, loopIndex) {
+            $.ajax({
+                url: '/admin/' + testId + '/update-tests-data',
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.data && response.data.currentTests && Array.isArray(response.data
+                            .currentTests)) {
+                        var testElement = $('#test-' + testId + '-' + loopIndex);
+                        var teamListHtml = '';
+
+                        $.each(response.data.currentTests, function(_, test) {
+                            testElement.find('#start-time-' + testId).text('Starts: ' +
+                                test.start_time);
+
+                            // Sort teams based on points (descending order)
+                            test.group.teams.sort(function(a, b) {
+                                return b.pivot.points - a.pivot.points;
+                            });
+
+                            $.each(test.group.teams, function(index, team) {
+                                teamListHtml +=
+                                    '<li class="list-group-item d-flex justify-content-between align-items-center">' +
+                                    '<span class="badge badge-primary badge-pill">' + (index +
+                                        1) + '</span>' +
+                                    '<span class="team-name">' + team.name + '</span>' +
+                                    '<span class="badge badge-success badge-pill">' + team.pivot
+                                    .points + '</span>' +
+                                    '</li>' +
+                                    '<hr class="my-1">';
+                            });
+                        });
+
+                        testElement.find('.team-list').html(teamListHtml);
+                    } else {
+                        console.error('Invalid response format:', response);
+                    }
+                },
+
+                error: function(error) {
+                    console.error('Error updating test data:', error);
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            $('.test-card').each(function() {
+                var testId = $(this).attr('id').split('-')[1];
+                var loopIndex = $(this).attr('id').split('-')[2];
+                setInterval(function() {
+                    updateTestData(testId, loopIndex);
+                }, 5000);
+            });
+        });
     </script>
 @endsection
 @section('style')

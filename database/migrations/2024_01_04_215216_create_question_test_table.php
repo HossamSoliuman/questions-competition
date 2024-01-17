@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('question_id')->constrained()->cascadeOnDelete();
             $table->foreignId('team_id')->nullable()->constrained()->cascadeOnDelete();
             $table->integer('answered')->default(0);
+            $table->integer('set')->default(0);
             $table->timestamps();
         });
     }

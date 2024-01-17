@@ -22,7 +22,7 @@ class ManualTestController extends Controller
     public function index(Test $test)
     {
         $test->load(['group', 'questions' => function ($query) {
-            $query->wherePivot('answered', 0);
+            $query->wherePivot('set', 0);
         }]);
         $testQuestions = $test->questions;
         $team_id = auth()->id();
@@ -34,14 +34,27 @@ class ManualTestController extends Controller
     public function setQuestion(Request $request)
     {
         $manualTest = $this->started($request->test_id);
-        $startTime = $this->calculateQuestionStartTime($manualTest->test_id);
+        $startTime = $this->calculateQuestionStartTime($manualTest->test_id, $manualTest);
         $manualTest->update([
             'question_id' => $request->question_id,
             'question_start_at' => $startTime,
         ]);
+        $this->setQuestionAsSet($manualTest->test_id, $request->question_id);
         return redirect()->route('manual-tests.index', ['test' => $request->test_id]);
     }
 
+    public function setQuestionAsSet($test_id, $question_id)
+    {
+        $testQuestion = QuestionTest::where('test_id', $test_id)->where('question_id', $question_id)->first();
+        $testQuestion->update([
+            'set' => 1,
+        ]);
+        $question = Question::find($question_id);
+        $question->update([
+            'repeated' => $question->repeated + 1,
+        ]);
+        return;
+    }
 
     public function started($test)
     {
@@ -59,12 +72,25 @@ class ManualTestController extends Controller
         return $manualTest;
     }
 
-
-    public function calculateQuestionStartTime($testId)
+    public function calculateQuestionStartTime($testId, $manualTest)
     {
         $test = Test::find($testId);
         if ($test) {
             $startTime = max(Carbon::now(), $test->start_time);
+            if ($test->status != Test::CURRENT) {
+                if (Carbon::now() > $test->start_time) {
+                    $test->update([
+                        'status' => Test::CURRENT,
+                    ]);
+                }
+            }
+
+            if ($manualTest->question_start_at) {
+                $currentQuestionEndTime = Carbon::parse($manualTest->question_start_at)
+                    ->addSeconds($manualTest->question_time)
+                    ->addSeconds($manualTest->answerTime);
+                $startTime = max($startTime, $currentQuestionEndTime);
+            }
             return $startTime;
         }
     }
@@ -73,8 +99,13 @@ class ManualTestController extends Controller
     public function endTest(Test $test)
     {
         $manualTest = ManualTest::where('test_id', $test->id)->first();
-        $manualTest->question_id = null;
-        $manualTest->delete();
+        $manualTest->update([
+            'question_id' => null
+        ]);
+        $test->update([
+            'status' => Test::PAST,
+        ]);
+        // $manualTest->delete();
         return redirect()->route('manual-tests.index', ['test' => $test->id]);
     }
 

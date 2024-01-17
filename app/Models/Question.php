@@ -17,6 +17,7 @@ class Question extends Model
         'd',
         'correct_answer',
         'category_id',
+        'repeated',
     ];
 
 

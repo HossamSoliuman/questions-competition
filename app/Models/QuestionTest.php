@@ -14,5 +14,6 @@ class QuestionTest extends Model
         'question_id',
         'team_id',
         'answered',
+        'set',
     ];
 }
