@@ -13,7 +13,12 @@ return new class extends Migration
     {
         Schema::create('manual_tests', function (Blueprint $table) {
             $table->id();
-            $table->
+            $table->foreignId('test_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('question_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('group_id')->constrained()->cascadeOnDelete();
+            $table->dateTime('question_start_at')->nullable();
+            $table->integer('question_time')->nullable();
+            $table->integer('answer_time')->nullable();
             $table->timestamps();
         });
     }

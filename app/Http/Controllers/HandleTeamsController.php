@@ -28,6 +28,6 @@ class HandleTeamsController extends Controller
         }
         $answerSubmitted = 0;
         $team_id = auth()->id();
-        return view('teams.test', compact('test', 'answerSubmitted', 'team_id'));
+        return view('teams.manual_test', compact('test', 'answerSubmitted', 'team_id'));
     }
 }

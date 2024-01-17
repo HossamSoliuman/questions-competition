@@ -62,6 +62,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::Resource('competitions', CompetitionController::class);
     // manual test
     Route::get('manual-tests/{test}', [ManualTestController::class, 'index'])->name('manual-tests.index');
+    Route::post('manual-tests/set-question', [ManualTestController::class, 'setQuestion'])->name('manual-tests.setQuestion');
 
     Route::get('admin/', [AdminController::class, 'index'])->name('admin.index');
     Route::post('groups/add-team', [GroupController::class, 'addTeam'])->name('groups.add-team');
@@ -94,3 +95,15 @@ Route::get('groups/{group}/standing', [GroupController::class, 'standing'])->nam
 
 
 Route::get('/admin/{testId}/update-tests-data', [AdminController::class, 'updateTestsData']);
+
+// manual test
+
+Route::get('manual-test/{test}/question', [ManualTestController::class, 'getQuestion'])
+    ->name('manual-test.question');
+
+Route::get('manual-test/{question}/{test}/answer', [ManualTestController::class, 'correctAnswer'])
+    ->name('manual-test.answer');
+
+//////////////////
+Route::post('manual-test/{test}/send-answer', [ManualTestController::class, 'sendAnswer'])
+    ->name('manual-test.sendAnswer');

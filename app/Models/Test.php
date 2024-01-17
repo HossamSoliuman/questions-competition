@@ -28,6 +28,6 @@ class Test extends Model
     public function questions()
     {
         return $this->belongsToMany(Question::class)
-            ->withPivot('id');;
+            ->withPivot(['id','team_id','answered']);;
     }
 }

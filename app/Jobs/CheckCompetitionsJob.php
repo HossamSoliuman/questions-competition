@@ -6,6 +6,8 @@ namespace App\Jobs;
 use App\Models\Competition;
 use App\Models\CompetitionQuestion;
 use App\Models\CurrentCompetition;
+use App\Models\CurrentTest;
+use App\Models\Test;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
@@ -21,7 +23,7 @@ class CheckCompetitionsJob
             ->get();
 
         foreach ($competitionsToStart as $competition) {
-            CurrentCompetition::create([
+            CurrentTest::create([
                 'competition_id' => $competition->id,
                 'question_id' => $this->getQuestionId($competition->id),
                 'group_id' => $competition->group_id,
@@ -30,7 +32,7 @@ class CheckCompetitionsJob
                 'answer_time' => $competition->answer_time,
             ]);
 
-            $competition->update(['status' => Competition::CURRENT]);
+            $competition->update(['status' => Test::CURRENT]);
         }
     }
     public function getQuestionId($competition)
