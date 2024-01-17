@@ -17,29 +17,32 @@ use Hossam\Licht\Traits\ApiResponse;
 class ManualTestController extends Controller
 {
     use ApiResponse;
+
+
     public function index(Test $test)
     {
         $test->load(['group', 'questions' => function ($query) {
             $query->wherePivot('answered', 0);
         }]);
-
         $testQuestions = $test->questions;
         $team_id = auth()->id();
         $answerSubmitted = 0;
-
-        return view('admin.current_manual_test', compact('test', 'testQuestions', 'team_id','answerSubmitted'));
+        return view('admin.current_manual_test', compact('test', 'testQuestions', 'team_id', 'answerSubmitted'));
     }
+
 
     public function setQuestion(Request $request)
     {
         $manualTest = $this->started($request->test_id);
+        $startTime = $this->calculateQuestionStartTime($manualTest->test_id);
         $manualTest->update([
             'question_id' => $request->question_id,
-            'question_start_at' => Carbon::now(),
+            'question_start_at' => $startTime,
         ]);
-
         return redirect()->route('manual-tests.index', ['test' => $request->test_id]);
     }
+
+
     public function started($test)
     {
         $manualTest = ManualTest::where('test_id', $test)->first();
@@ -54,6 +57,25 @@ class ManualTestController extends Controller
             'answer_time' => $test->answer_time,
         ]);
         return $manualTest;
+    }
+
+
+    public function calculateQuestionStartTime($testId)
+    {
+        $test = Test::find($testId);
+        if ($test) {
+            $startTime = max(Carbon::now(), $test->start_time);
+            return $startTime;
+        }
+    }
+
+
+    public function endTest(Test $test)
+    {
+        $manualTest = ManualTest::where('test_id', $test->id)->first();
+        $manualTest->question_id = null;
+        $manualTest->delete();
+        return redirect()->route('manual-tests.index', ['test' => $test->id]);
     }
 
 

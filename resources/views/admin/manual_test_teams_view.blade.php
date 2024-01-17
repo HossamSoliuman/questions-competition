@@ -10,7 +10,11 @@
             </div>
         </div>
     </div>
-    <div class="mb-5">
+    <div class="testEnded mb-5">
+        <div class="h-4 w-4">
+            <p> Test Have been ended </p>
+            <p> Moved to groups standings view </p>
+        </div>
         {{-- question form start --}}
         <div class="test-questions">
             <div class="col-md-6 offset-md-3">
@@ -84,9 +88,11 @@
         var questionSecondsRemaining = 0;
         var answerSecondsRemaining = 0;
         var answerSubmitted = false;
-        
+
 
         document.querySelector('.test-questions').style.display = 'none';
+
+        document.querySelector('.testEnded').style.display = 'none';
         document.querySelector('.answer-info').style.display = 'none';
 
         function updateCountdown() {
@@ -180,9 +186,11 @@
                 if (this.readyState == 4 && this.status == 200) {
                     var responseData = JSON.parse(this.responseText);
                     if (responseData.data.question_id === null) {
+                        document.querySelector('.testEnded').style.display = 'block';
+
                         // Redirect user to the standing route
                         // window.location.href = "{{ route('handle-teams.index', ['group' => $test->group_id]) }}";
-                        window.location.href = "{{ route('handle-teams.index') }}";
+                        // window.location.href = "{{ route('handle-teams.index') }}";
                         return; // Exit the function to prevent further execution
                     }
                     var questionId = responseData.data.id; // Extract the questionId

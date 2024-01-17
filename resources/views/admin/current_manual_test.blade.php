@@ -58,6 +58,11 @@
                             </div>
                         </div>
                     </form>
+                    <form action="{{ route('manual-test.endTest', ['test' => $test->id]) }}" method="get">
+                        <div class="form-group">
+                            <button class=" btn btn-danger" type="submit">End Test</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

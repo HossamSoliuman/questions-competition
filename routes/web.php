@@ -101,6 +101,9 @@ Route::get('/admin/{testId}/update-tests-data', [AdminController::class, 'update
 Route::get('manual-test/{test}/question', [ManualTestController::class, 'getQuestion'])
     ->name('manual-test.question');
 
+Route::get('manual-test/{test}/end-test', [ManualTestController::class, 'endTest'])
+    ->name('manual-test.endTest');
+
 Route::get('manual-test/{question}/{test}/answer', [ManualTestController::class, 'correctAnswer'])
     ->name('manual-test.answer');
 
