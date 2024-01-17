@@ -16,4 +16,8 @@ class QuestionTest extends Model
         'answered',
         'set',
     ];
+    public function test()
+    {
+        return $this->belongsTo(Test::class);
+    }
 }

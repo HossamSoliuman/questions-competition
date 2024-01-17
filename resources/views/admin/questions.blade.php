@@ -129,6 +129,7 @@
                 <table class="table table-bordered table-hover">
                     <thead class="thead-dark">
                         <tr>
+                            <th>Repeats</th>
                             <th style="width: 15%; font-size:small">Question Category</th>
                             <th style="width: 15%;">Question</th>
                             <th style="width: 10%;">Answer A</th>
@@ -143,6 +144,7 @@
                         @foreach ($questions as $question)
                             <tr style="font-size:x-small" data-question-id="{{ $question->id }}"
                                 data-question-category-id="{{ $question->category->id }}">
+                                <td>{{ $question->repeated }}</td>
                                 <td class="question-category">{{ $question->category->name }}</td>
                                 <td class="question-name">{{ $question->name }}</td>
                                 <td class="answer-a">{{ $question->a }}</td>

@@ -29,7 +29,7 @@ class TestController extends LichtBaseController
         ];
         $tests = Test::with('group')->orderBy('start_time', 'desc')->paginate(4);
         $groups = Group::all();
-        return view('admin.tests', compact('tests', 'groups','status'));
+        return view('admin.tests', compact('tests', 'groups', 'status'));
     }
 
     /**
@@ -73,12 +73,15 @@ class TestController extends LichtBaseController
 
     public function showQuestions(Test $test)
     {
-        // Get all questions that are not associated with the current test
-        $allQuestions = Question::whereDoesntHave('questionTests', function ($query) use ($test) {
-            $query->where('test_id', $test->id);
+
+        $test->load('questions.category', 'group.competition');
+        $competitionId = $test->group->competition->id;
+
+        $allQuestions = Question::whereDoesntHave('tests.group.competition', function ($query) use ($competitionId) {
+            $query->where('id', $competitionId);
         })->get();
+
         $categories = Category::all();
-        $test->load('questions.category');
         return view('admin.test_questions', compact('allQuestions', 'test', 'categories'));
     }
 
@@ -98,80 +101,78 @@ class TestController extends LichtBaseController
         $QuestionTest->delete();
         return redirect()->route('tests.questions', ['test' => $QuestionTest->test_id]);
     }
-    // all questions 23 talib 15 -> 10
     public function addQuestionsAuto(Request $request)
     {
-        $number_of_questions = $request->number_of_questions;
-        $test_id = $request->test_id;
-        $allQuestions = Question::all()->count();
-        $existQuestions = QuestionTest::where('test_id', $test_id)->get()->count();
-        if ($number_of_questions > ($allQuestions - $existQuestions)) {
-            $number_of_questions = $allQuestions - $existQuestions;
-        }
-        $question_id = $this->getRandomQuestion();
-        for ($i = 0; $i < $number_of_questions; $i++) {
-            while ($this->checkIfQuestionRepeated($test_id, $question_id)) {
-                $question_id = $this->getRandomQuestion();
-            }
+        $maxRepeats = $request->max_repeats;
+        $numberOfQuestions = $request->number_of_questions;
+        $testId = $request->test_id;
+
+        $test = Test::with('group.competition')->findOrFail($testId);
+        $competitionId = $test->group->competition->id;
+
+        $existingQuestionIds = QuestionTest::whereHas('test.group.competition', function ($query) use ($competitionId) {
+            $query->where('id', $competitionId);
+        })->pluck('question_id')->toArray();
+
+        $questions = Question::inRandomOrder()
+            ->where('repeated', '<=', $maxRepeats)
+            ->whereNotIn('id', $existingQuestionIds)
+            ->limit($numberOfQuestions)
+            ->get();
+
+        foreach ($questions as $question) {
             QuestionTest::create([
-                'test_id' => $test_id,
-                'question_id' => $question_id,
+                'test_id' => $testId,
+                'question_id' => $question->id,
             ]);
         }
-        return redirect()->route('tests.questions', ['test' => $request->test_id]);
+
+        return redirect()->route('tests.questions', ['test' => $testId]);
     }
-    public function getRandomQuestion()
-    {
-        $question = Question::inRandomOrder()->first();
-        return $question->id;
-    }
-    public function checkIfQuestionRepeated($test_id, $question_id)
-    {
-        $exist = QuestionTest::where('test_id', $test_id)->where('question_id', $question_id)->first();
-        if ($exist)
-            return 1;
-        return 0;
-    }
+
+
     public function addQuestionsByCategories(Request $request)
     {
         $test_id = $request->test_id;
         $categories = $request->categories;
         $number_of_questions = $request->number_of_questions;
+        $max_repeats = $request->max_repeats;
+
+        $test = Test::with('group.competition')->findOrFail($test_id);
+        $competitionId = $test->group->competition->id;
 
         // Loop through each category
         for ($i = 0; $i < count($categories); $i++) {
             $category_id = $categories[$i];
-            $questionsInCategory = Question::where('category_id', $category_id)->pluck('id');
-            $existQuestions = QuestionTest::where('test_id', $test_id)
-                ->whereIn('question_id', function ($query) use ($category_id) {
-                    $query->select('id')
-                        ->from('questions')
-                        ->where('category_id', $category_id);
-                })
-                ->count();
+            $questionsInCategory = Question::where('category_id', $category_id)
+                ->where('repeated', '<=', $max_repeats[$i])
+                ->pluck('id');
+
+            $existingQuestionIds = QuestionTest::whereHas('test.group.competition', function ($query) use ($competitionId) {
+                $query->where('id', $competitionId);
+            })->pluck('question_id')->toArray();
+
+            // Filter questions not in the test, not repeated, and below max_repeats
+            $availableQuestions = $questionsInCategory->diff($existingQuestionIds);
 
             // Ensure the number of questions requested is not more than available questions in the category
-            if ($number_of_questions[$i] > (count($questionsInCategory) - $existQuestions)) {
-                $number_of_questions[$i] = (count($questionsInCategory) - $existQuestions);
-            }
+            $numberToAdd = min($number_of_questions[$i], count($availableQuestions));
 
             // Add questions to the test
-            for ($j = 0; $j < $number_of_questions[$i]; $j++) {
-                $question_id = $questionsInCategory->random();
+            for ($j = 0; $j < $numberToAdd; $j++) {
+                $question_id = $availableQuestions->random();
 
-                // Check if the question is repeated in the test
-                while ($this->checkIfQuestionRepeated($test_id, $question_id)) {
-                    $question_id = $questionsInCategory->random();
-                }
-
-                // Add the question to the test
                 QuestionTest::create([
                     'test_id' => $test_id,
                     'question_id' => $question_id,
                 ]);
+
+                // Remove the added question from the available questions list
+                $availableQuestions = $availableQuestions->diff([$question_id]);
             }
         }
 
         return redirect()->route('tests.questions', ['test' => $test_id]);
     }
+
 }
