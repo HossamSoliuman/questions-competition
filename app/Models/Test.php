@@ -30,4 +30,8 @@ class Test extends Model
         return $this->belongsToMany(Question::class)
             ->withPivot(['id','team_id','answered']);;
     }
+
+	public function audiences(){
+		return $this->hasMany(Audience::class);
+	}
 }

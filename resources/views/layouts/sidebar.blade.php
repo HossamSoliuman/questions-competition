@@ -42,6 +42,12 @@
             </a>
         </li>
 
+        <li class="nav-item">
+            <a class="nav-link btn btn-secondary btn-block mb-2" href="{{ route('audiences.index') }}">
+                Audiences
+            </a>
+        </li>
+
 
         <li class="nav-item">
 

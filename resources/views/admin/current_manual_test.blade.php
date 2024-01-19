@@ -99,6 +99,51 @@
 
         </div>
     </div>
+    {{-- audience section  --}}
+    <hr>
+    <div class="row">
+        <div class="col text-center">
+            <h3 class="mb-3">Audience Section</h3>
+            <form id="setQuestionForm" action="{{ route('audience-questions.set') }}" method="post">
+                @csrf
+                <input type="hidden" name="test_id" value="{{ $test->id }}">
+                <button type="submit" class="btn btn-primary">Set Question</button>
+            </form>
+            <button class="btn btn-info" id="showQuestion" data-show="1">Show Question</button>
+            <button class="btn btn-warning" data-action="show-question" data-show="0">Hide Question</button>
+        </div>
+
+        <div class="col">
+            <h3>Audience Correct Answer</h3>
+            <form id="setAnswerForm" action="{{ route('audiences.store') }}" method="post">
+                @csrf
+                <input type="hidden" name="test_id" value="{{ $test->id }}">
+                <div class="form-group">
+                    <label for="audienceName">Audience Number</label>
+                    <input type="text" name="number" id="audienceName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="audienceName">Audience Name</label>
+                    <input type="text" name="name" id="audienceName" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" name="phone" id="phone" class="form-control" required>
+                </div>
+
+                <button type="submit" class="btn btn-success">Submit</button>
+            </form>
+            <button class="btn btn-info" data-action="show-answer" data-show="1">Show Answer</button>
+            <button class="btn btn-warning" data-action="show-answer" data-show="0">Hide Answer</button>
+        </div>
+    </div>
+
     <div class="row">
         @include('admin.manual_test_teams_view')
     </div>
@@ -162,6 +207,27 @@
                 setInterval(function() {
                     updateTestData(testId, loopIndex);
                 }, 5000);
+            });
+        });
+        $(document).ready(function() {
+            $('#showQuestion').on('click', function() {
+                var show = $(this).data('show');
+                var testId = "{{ $test->id }}";
+
+                $.get("/current-audience-questions/" + testId + "/show-question/" + show, function(data) {
+                    // Optionally, you can handle the response here
+                    console.log(data);
+                });
+            });
+
+            $('button[data-action="show-answer"]').on('click', function() {
+                var show = $(this).data('show');
+                var testId = "{{ $test->id }}";
+
+                $.get("/current-audience-questions/" + testId + "/show-answer/" + show, function(data) {
+                    // Optionally, you can handle the response here
+                    console.log(data);
+                });
             });
         });
     </script>

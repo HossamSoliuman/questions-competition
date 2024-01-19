@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AudienceController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompetitionController;
+use App\Http\Controllers\CurrentAudienceQuestionController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\CurrentTestController;
 use App\Http\Controllers\ExtractionController;
@@ -60,6 +62,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::apiResource('groups', GroupController::class);
     Route::apiResource('tests', TestController::class);
     Route::Resource('competitions', CompetitionController::class);
+    Route::Resource('audiences', AudienceController::class);
     // manual test
     Route::get('manual-tests/{test}', [ManualTestController::class, 'index'])->name('manual-tests.index');
     Route::post('manual-tests/set-question', [ManualTestController::class, 'setQuestion'])->name('manual-tests.setQuestion');
@@ -74,6 +77,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('test-questions/{questionTest}', [TestController::class, 'removeQuestion'])->name('tests-questions.remove');
     Route::post('test-questions/add-questions/auto', [TestController::class, 'addQuestionsAuto'])->name('tests-questions.auto');
     Route::post('test-questions/add-questions/category', [TestController::class, 'addQuestionsByCategories'])->name('tests-questions.category');
+
+    Route::post('current-audience-questions/set', [CurrentAudienceQuestionController::class, 'set'])->name('audience-questions.set');
+    Route::get('current-audience-questions/{test_id}/show-question/{show}', [CurrentAudienceQuestionController::class, 'showQuestion'])->name('audience-questions.show-question');
+    Route::get('current-audience-questions/{testId}/show-answer/{show}', [CurrentAudienceQuestionController::class, 'showAnswer'])->name('audience-questions.show-answer');
 });
 
 
