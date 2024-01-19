@@ -25,7 +25,7 @@ class GroupController extends LichtBaseController
         $groups = Group::with('teams')->orderBy('id', 'desc')->paginate(2);
         $allTeams = Team::all();
         $allCompetitions = Competition::orderBy('id', 'desc')->get();
-        return view('admin.groups', compact('groups', 'allTeams','allCompetitions'));
+        return view('admin.groups', compact('groups', 'allTeams', 'allCompetitions'));
     }
 
     /**
@@ -75,6 +75,7 @@ class GroupController extends LichtBaseController
         $group->delete();
         return redirect()->route('groups.index');
     }
+
     public function addTeam(HttpRequest $request)
     {
         GroupTeam::create([
@@ -92,5 +93,31 @@ class GroupController extends LichtBaseController
     {
         return $group;
         return view('teams.standing');
+    }
+    public function createGroupWithTeams(HttpRequest $request)
+    {
+        $number_of_qualifiers = $request->max_teams;
+
+        $competition = Competition::with(['groups' => function ($query) {
+            $query->where('round', Competition::GROUPS);
+        }, 'groups.teams'])->find($request->competition_id);
+
+        $newGroup = Group::create([
+            'name' => 'winners from groups round competition ' . $competition->name,
+            'round' => Competition::FINAL,
+            'competition_id' => $competition->id,
+        ]);
+
+        foreach ($competition->groups as $existingGroup) {
+            $sortedTeams = $existingGroup->teams->sortBy('name')->sortByDesc('pivot.points')->take($number_of_qualifiers);
+
+            foreach ($sortedTeams as $team) {
+                GroupTeam::create([
+                    'group_id' => $newGroup->id,
+                    'team_id' => $team->id,
+                ]);
+            }
+        }
+        return redirect()->route('competitions.show', ['competition' => $competition]);
     }
 }

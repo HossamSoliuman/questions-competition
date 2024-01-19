@@ -67,6 +67,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('admin/', [AdminController::class, 'index'])->name('admin.index');
     Route::post('groups/add-team', [GroupController::class, 'addTeam'])->name('groups.add-team');
     Route::post('groups/remove-team', [GroupController::class, 'removeTeam'])->name('groups.remove-team');
+    Route::post('groups/create/with-teams', [GroupController::class, 'createGroupWithTeams'])->name('groups.create.with-teams');
+
     Route::get('tests/{test}/questions', [TestController::class, 'showQuestions'])->name('tests.questions');
     Route::post('tests/questions', [TestController::class, 'addQuestions'])->name('tests.questions.add');
     Route::post('test-questions/{questionTest}', [TestController::class, 'removeQuestion'])->name('tests-questions.remove');

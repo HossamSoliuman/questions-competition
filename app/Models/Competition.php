@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 class Competition extends Model
 {
     use HasFactory;
-
+    const FINAL = 'Final Round';
+    const GROUPS = 'Groups Round';
     protected $fillable = [
         'name',
     ];
