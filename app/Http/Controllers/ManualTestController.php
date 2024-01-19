@@ -17,29 +17,50 @@ use Hossam\Licht\Traits\ApiResponse;
 class ManualTestController extends Controller
 {
     use ApiResponse;
-
-
     public function index(Test $test)
     {
+        // Load test with groups and questions (where set is 0)
         $test->load(['group', 'questions' => function ($query) {
             $query->wherePivot('set', 0);
         }]);
+
+        // Get the questions associated with the test
         $testQuestions = $test->questions;
+
+        // Get the categories for the questions with name and id
+        $categories = $testQuestions->map(function ($question) {
+            return [
+                'id'   => $question->category->id,
+                'name' => $question->category->name,
+            ];
+        })->unique();
+
+        // Other variables
         $team_id = auth()->id();
         $answerSubmitted = 0;
-        return view('admin.current_manual_test', compact('test', 'testQuestions', 'team_id', 'answerSubmitted'));
+
+        return view('admin.current_manual_test', compact('test', 'testQuestions', 'team_id', 'answerSubmitted', 'categories'));
     }
+
 
 
     public function setQuestion(Request $request)
     {
+        $testQuestion = QuestionTest::where('test_id', $request->test_id)
+            ->where('set', 0)
+            ->whereHas('question.category', function ($query) use ($request) {
+                $query->where('id', $request->category_id);
+            })
+            ->first();
+        $question_id = $testQuestion->question_id;
+
         $manualTest = $this->started($request->test_id);
         $startTime = $this->calculateQuestionStartTime($manualTest->test_id, $manualTest);
         $manualTest->update([
-            'question_id' => $request->question_id,
+            'question_id' => $question_id,
             'question_start_at' => $startTime,
         ]);
-        $this->setQuestionAsSet($manualTest->test_id, $request->question_id);
+        $this->setQuestionAsSet($manualTest->test_id, $question_id);
         return redirect()->route('manual-tests.index', ['test' => $request->test_id]);
     }
 

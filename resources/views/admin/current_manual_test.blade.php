@@ -33,42 +33,70 @@
             </div>
             {{-- end group card --}}
 
-            {{-- moving questions form  --}}
+            <style>
+                .category-card label {
+                    white-space: nowrap;
+                    /* overflow: hidden; */
+                    /* text-overflow: ellipsis; */
+                    font-size: xx-small;
+                    padding: 0%;
+                    max-width: 100%;
+                    /* Allow variable width up to 100% */
+                }
+
+                .category-card {
+                    border: none;
+                    /* Remove card border */
+                }
+
+                .category-card .card-body {
+                    padding: 0;
+                    /* Remove padding from card body */
+                }
+            </style>
+
             <div class="col">
                 <h2 class="section-title">Current Test Group Questions</h2>
-
                 <div class="card-body">
                     <form action="{{ route('manual-tests.setQuestion') }}" method="post">
                         @csrf
                         <div class="row">
-                            @if ($testQuestions->isNotEmpty())
-                                <div class="col">
-                                    <div class="form-group">
-                                        <input type="hidden" name="test_id" value="{{ $test->id }}">
-                                        <select name="question_id" class="form-control" placeholder="Question">
-                                            @foreach ($testQuestions as $question)
-                                                <option value="{{ $question->id }}">{{ $question->name }}</option>
-                                            @endforeach
-                                        </select>
+                            @if ($categories->isNotEmpty())
+                                @foreach ($categories as $category)
+                                    <div class="col-md-4">
+                                        <div class="card mb-3 category-card">
+                                            <div class="card-body text-center p-0">
+                                                <input type="hidden" name="test_id" value="{{ $test->id }}">
+                                                <input type="radio" name="category_id" value="{{ $category['id'] }}"
+                                                    id="category_{{ $category['id'] }}"
+                                                    class="category-radio visually-hidden">
+                                                <label for="category_{{ $category['id'] }}"
+                                                    class="btn btn-outline-primary btn-block text-sm">{{ $category['name'] }}</label>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col">
+                                @endforeach
+                                <div class=" col-md-4">
                                     <div class="form-group">
-                                        <button class="btn btn-primary" type="submit">Set</button>
+                                        <button class="btn btn-primary btn-block text-md" type="submit">Set</button>
                                     </div>
                                 </div>
                             @else
-                                <p>No more questions</p>
+                                <div class="col">
+                                    <p>No more questions</p>
+                                </div>
                             @endif
                         </div>
+                    </form>
                 </div>
-                </form>
                 <form action="{{ route('manual-test.endTest', ['test' => $test->id]) }}" method="get">
                     <div class="form-group">
-                        <button class=" btn btn-danger" type="submit">End Test</button>
+                        <button class="btn btn-danger btn-block text-md" type="submit">End Test</button>
                     </div>
                 </form>
             </div>
+
+
         </div>
     </div>
     <div class="row">
