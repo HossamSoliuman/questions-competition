@@ -17,6 +17,7 @@ use App\Http\Controllers\MatchController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\TableController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\TmController;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -37,7 +38,7 @@ use Symfony\Component\Finder\Iterator\FilecontentFilterIterator;
 Auth::routes([
     'register' => false
 ]);
-
+Route::get('tm', TmController::class);
 // Route::get('t', function () {
 //     User::create([
 //         'id' => 1,
@@ -65,6 +66,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::Resource('audiences', AudienceController::class);
     // manual test
     Route::get('manual-tests/{test}', [ManualTestController::class, 'index'])->name('manual-tests.index');
+    Route::get('manual-tests/{test}/main-screen', [ManualTestController::class, 'mainScreen'])->name('manual-tests.mainScreen');
     Route::post('manual-tests/set-question', [ManualTestController::class, 'setQuestion'])->name('manual-tests.setQuestion');
 
     Route::get('admin/', [AdminController::class, 'index'])->name('admin.index');
@@ -79,8 +81,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('test-questions/add-questions/category', [TestController::class, 'addQuestionsByCategories'])->name('tests-questions.category');
 
     Route::post('current-audience-questions/set', [CurrentAudienceQuestionController::class, 'set'])->name('audience-questions.set');
-    Route::get('current-audience-questions/{test_id}/show-question/{show}', [CurrentAudienceQuestionController::class, 'showQuestion'])->name('audience-questions.show-question');
-    Route::get('current-audience-questions/{testId}/show-answer/{show}', [CurrentAudienceQuestionController::class, 'showAnswer'])->name('audience-questions.show-answer');
+    Route::get('current-audience-questions/{test_id}/{show}/show-question', [CurrentAudienceQuestionController::class, 'showQuestion'])->name('audience-questions.show-question');
+    Route::get('current-audience-answers/{test_id}/{show}/show-answer', [CurrentAudienceQuestionController::class, 'showAnswer'])->name('audience-questions.show-answer');
 });
 
 
@@ -119,3 +121,5 @@ Route::get('manual-test/{question}/{test}/answer', [ManualTestController::class,
 //////////////////
 Route::post('manual-test/{test}/send-answer', [ManualTestController::class, 'sendAnswer'])
     ->name('manual-test.sendAnswer');
+
+Route::get('manual-tests/{test}/get-audience-questions', [ManualTestController::class, 'getAudienceQuestions'])->name('manual-tests.getAudienceQuestions');

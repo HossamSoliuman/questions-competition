@@ -12,7 +12,12 @@
                 <div class="card test-card mb-5" id="test-{{ $test->id }}-{{ $loop->index }}">
                     <div class="card-header">
                         <h3 class="test-title">{{ $test->name }}</h3>
-                        <a href="{{ route('manual-tests.index', ['test' => $test->id]) }}">Enter Test</a>
+                        <div class="mb-2">
+                            <a class="" href="{{ route('manual-tests.index', ['test' => $test->id]) }}">Enter To Manageing Test</a>
+                        </div>
+                        <div class="">
+                            <a class="mb-2" href="{{ route('manual-tests.mainScreen', ['test' => $test->id]) }}">Enter To Main Screen</a>
+                        </div>
                     </div>
                     <div class="card-body">
                         <p class="test-start" id="start-time-{{ $test->id }}">Starts:
@@ -44,7 +49,6 @@
                                 <div class="card-header">
                                     <h3 class="test-title">{{ $test->name }}</h3>
                                     <a href="{{ route('manual-tests.index', ['test' => $test->id]) }}">Enter Test</a>
-
                                 </div>
                                 <div class="card-body">
                                     <p class="test-start" id="start-time-{{ $test->id }}">Starts:
@@ -57,7 +61,6 @@
                                                 <span
                                                     class="badge badge-success badge-pill">{{ $team->pivot->points }}</span>
                                             </li>
-                                            <!-- Separator line -->
                                             <hr class="my-1">
                                         @endforeach
                                     </ul>
@@ -69,6 +72,4 @@
             @endforeach
         </div>
     </section>
-
-
 @endsection

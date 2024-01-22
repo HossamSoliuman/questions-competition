@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CurrentAudienceQuestion;
 use App\Models\CurrentTest;
 use App\Models\GroupTeam;
 use App\Models\ManualTest;
@@ -17,31 +18,23 @@ use Hossam\Licht\Traits\ApiResponse;
 class ManualTestController extends Controller
 {
     use ApiResponse;
+
     public function index(Test $test)
     {
-        // Load test with groups and questions (where set is 0)
         $test->load(['group', 'questions' => function ($query) {
             $query->wherePivot('set', 0);
         }]);
-
-        // Get the questions associated with the test
         $testQuestions = $test->questions;
-
-        // Get the categories for the questions with name and id
         $categories = $testQuestions->map(function ($question) {
             return [
                 'id'   => $question->category->id,
                 'name' => $question->category->name,
             ];
         })->unique();
-
-        // Other variables
         $team_id = auth()->id();
         $answerSubmitted = 0;
-
         return view('admin.current_manual_test', compact('test', 'testQuestions', 'team_id', 'answerSubmitted', 'categories'));
     }
-
 
 
     public function setQuestion(Request $request)
@@ -53,7 +46,6 @@ class ManualTestController extends Controller
             })
             ->first();
         $question_id = $testQuestion->question_id;
-
         $manualTest = $this->started($request->test_id);
         $startTime = $this->calculateQuestionStartTime($manualTest->test_id, $manualTest);
         $manualTest->update([
@@ -63,6 +55,7 @@ class ManualTestController extends Controller
         $this->setQuestionAsSet($manualTest->test_id, $question_id);
         return redirect()->route('manual-tests.index', ['test' => $request->test_id]);
     }
+
 
     public function setQuestionAsSet($test_id, $question_id)
     {
@@ -105,7 +98,6 @@ class ManualTestController extends Controller
                     ]);
                 }
             }
-
             if ($manualTest->question_start_at) {
                 $currentQuestionEndTime = Carbon::parse($manualTest->question_start_at)
                     ->addSeconds($manualTest->question_time)
@@ -126,7 +118,6 @@ class ManualTestController extends Controller
         $test->update([
             'status' => Test::PAST,
         ]);
-        // $manualTest->delete();
         return redirect()->route('manual-tests.index', ['test' => $test->id]);
     }
 
@@ -151,7 +142,6 @@ class ManualTestController extends Controller
             'name' => $question->name,
             'correct_answer' => $question->correct_answer . ') ' . $question[$question->correct_answer],
         ];
-
         $TestQuestion = QuestionTest::where('test_id', $test)->where('question_id', $question->id)->first();
         $isAnswered = $TestQuestion->answered;
         if (!$isAnswered) {
@@ -165,9 +155,7 @@ class ManualTestController extends Controller
             $corrcorrectTeamAnswer = $correctTeamAnswer->name;
         } else
             $corrcorrectTeamAnswer = 'no one';
-
         $data['corrcorrectTeamAnswer'] = $corrcorrectTeamAnswer;
-
         return $this->successResponse($data);
     }
 
@@ -196,5 +184,24 @@ class ManualTestController extends Controller
             }
         }
         return;
+    }
+
+
+    public function mainScreen(Test $test)
+    {
+        $test->load(['group']);
+        $team_id = auth()->id();
+        $answerSubmitted = 0;
+        return view('admin.main_screen', compact('test', 'team_id', 'answerSubmitted'));
+    }
+
+
+    public function getAudienceQuestions(Test $test)
+    {
+        $audienceQuestion = CurrentAudienceQuestion::with('question')->where('test_id', $test->id)->first();
+        if (!$audienceQuestion || !$audienceQuestion->question) {
+            $audienceQuestion = null;
+        }
+        return $this->successResponse($audienceQuestion);
     }
 }

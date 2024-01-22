@@ -30,7 +30,6 @@ class CurrentAudienceQuestionController extends Controller
         return response()->json(['message' => 'Success']);
     }
 
-
     public function showAnswer($testId, $show)
     {
         $testQuestion = CurrentAudienceQuestion::where('test_id', $testId)->first();
@@ -56,6 +55,7 @@ class CurrentAudienceQuestionController extends Controller
     }
     public function getRandomQuestionId($test_id)
     {
+
         $test = Test::findOrFail($test_id);
         $competitionId = $test->group->competition->id;
 
@@ -66,7 +66,8 @@ class CurrentAudienceQuestionController extends Controller
         $randomQuestion = Question::inRandomOrder()
             ->whereNotIn('id', $existingQuestionIds)
             ->first();
-
+        if (!$randomQuestion)
+            return null;
         if ($randomQuestion) {
             QuestionTest::create([
                 'test_id' => $test_id,

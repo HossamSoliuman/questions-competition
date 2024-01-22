@@ -36,12 +36,9 @@
             <style>
                 .category-card label {
                     white-space: nowrap;
-                    /* overflow: hidden; */
-                    /* text-overflow: ellipsis; */
                     font-size: xx-small;
                     padding: 0%;
                     max-width: 100%;
-                    /* Allow variable width up to 100% */
                 }
 
                 .category-card {
@@ -67,8 +64,8 @@
                                         <div class="card mb-3 category-card">
                                             <div class="card-body text-center p-0">
                                                 <input type="hidden" name="test_id" value="{{ $test->id }}">
-                                                <input type="radio" name="category_id" value="{{ $category['id'] }}"
-                                                    id="category_{{ $category['id'] }}"
+                                                <input required type="radio" name="category_id"
+                                                    value="{{ $category['id'] }}" id="category_{{ $category['id'] }}"
                                                     class="category-radio visually-hidden">
                                                 <label for="category_{{ $category['id'] }}"
                                                     class="btn btn-outline-primary btn-block text-sm">{{ $category['name'] }}</label>
@@ -107,11 +104,36 @@
             <form id="setQuestionForm" action="{{ route('audience-questions.set') }}" method="post">
                 @csrf
                 <input type="hidden" name="test_id" value="{{ $test->id }}">
+
+                <!-- Add input for max audiences -->
+                <div class="form-group">
+                    <label for="maxAudiences">Max Audiences:</label>
+                    <input type="number" class="form-control" id="maxAudiences" name="maxAudiences" placeholder="Enter max audiences" required>
+                </div>
+
+                <!-- Add button to generate random audience number -->
+                <button type="button" class="btn btn-success" id="generateRandomAudience">Generate Random Audience Number</button>
+
+                <div class="form-group">
+                    <label for="randomAudience">Random Audience Number:</label>
+                    <input type="text" class="form-control" id="randomAudience" readonly>
+                </div>
+
                 <button type="submit" class="btn btn-primary">Set Question</button>
             </form>
-            <button class="btn btn-info" id="showQuestion" data-show="1">Show Question</button>
-            <button class="btn btn-warning" data-action="show-question" data-show="0">Hide Question</button>
+
+            <button class="btn btn-info" id="showAudienceQuestion" data-show="1">Show Question</button>
+            <button class="btn btn-warning" id="hideAudienceQuestion" data-show="0">Hide Question</button>
+
+            <script>
+                document.getElementById('generateRandomAudience').addEventListener('click', function () {
+                    var maxAudiences = document.getElementById('maxAudiences').value;
+                    var randomAudience = Math.floor(Math.random() * maxAudiences) + 1;
+                    document.getElementById('randomAudience').value = randomAudience;
+                });
+            </script>
         </div>
+
 
         <div class="col">
             <h3>Audience Correct Answer</h3>
@@ -139,8 +161,8 @@
 
                 <button type="submit" class="btn btn-success">Submit</button>
             </form>
-            <button class="btn btn-info" data-action="show-answer" data-show="1">Show Answer</button>
-            <button class="btn btn-warning" data-action="show-answer" data-show="0">Hide Answer</button>
+            <button class="btn btn-info" id="showAudienceAnswer" data-show="1">Show Answer</button>
+            <button class="btn btn-warning" id="hideAudienceAnswer" data-show="0">Hide Answer</button>
         </div>
     </div>
 
@@ -170,7 +192,6 @@
                             testElement.find('#start-time-' + testId).text('Starts: ' +
                                 test.start_time);
 
-                            // Sort teams based on points (descending order)
                             test.group.teams.sort(function(a, b) {
                                 return b.pivot.points - a.pivot.points;
                             });
@@ -207,27 +228,6 @@
                 setInterval(function() {
                     updateTestData(testId, loopIndex);
                 }, 5000);
-            });
-        });
-        $(document).ready(function() {
-            $('#showQuestion').on('click', function() {
-                var show = $(this).data('show');
-                var testId = "{{ $test->id }}";
-
-                $.get("/current-audience-questions/" + testId + "/show-question/" + show, function(data) {
-                    // Optionally, you can handle the response here
-                    console.log(data);
-                });
-            });
-
-            $('button[data-action="show-answer"]').on('click', function() {
-                var show = $(this).data('show');
-                var testId = "{{ $test->id }}";
-
-                $.get("/current-audience-questions/" + testId + "/show-answer/" + show, function(data) {
-                    // Optionally, you can handle the response here
-                    console.log(data);
-                });
             });
         });
     </script>

@@ -14,4 +14,8 @@ class CurrentAudienceQuestion extends Model
         'show_question',
         'show_answer',
     ];
+    public function question()
+    {
+        return $this->belongsTo(Question::class);
+    }
 }

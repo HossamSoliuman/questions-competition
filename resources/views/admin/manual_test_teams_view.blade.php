@@ -86,6 +86,147 @@
 </div>
 @section('scripts')
     <script>
+        function updateTestData(testId, loopIndex) {
+            $.ajax({
+                url: '/admin/' + testId + '/update-tests-data',
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.data && response.data.currentTests && Array.isArray(response.data
+                            .currentTests)) {
+                        var testElement = $('#test-' + testId + '-' + loopIndex);
+                        var teamListHtml = '';
+
+                        $.each(response.data.currentTests, function(_, test) {
+                            testElement.find('#start-time-' + testId).text('Starts: ' + test
+                                .start_time);
+
+                            // Sort teams based on points (descending order)
+                            test.group.teams.sort(function(a, b) {
+                                return b.pivot.points - a.pivot.points;
+                            });
+
+                            $.each(test.group.teams, function(index, team) {
+                                teamListHtml +=
+                                    '<li class="list-group-item d-flex justify-content-between align-items-center">' +
+                                    '<span class="badge badge-primary badge-pill">' + (index +
+                                        1) + '</span>' +
+                                    '<span class="team-name">' + team.name + '</span>' +
+                                    '<span class="badge badge-success badge-pill">' + team.pivot
+                                    .points + '</span>' +
+                                    '</li>' +
+                                    '<hr class="my-1">';
+                            });
+                        });
+
+                        testElement.find('.team-list').html(teamListHtml);
+                    } else {
+                        console.error('Invalid response format:', response);
+                    }
+                },
+
+                error: function(error) {
+                    console.error('Error updating test data:', error);
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            $('.test-card').each(function() {
+                var testId = $(this).attr('id').split('-')[1];
+                var loopIndex = $(this).attr('id').split('-')[2];
+                setInterval(function() {
+                    updateTestData(testId, loopIndex);
+                }, 5000);
+            });
+        });
+
+        $(document).ready(function() {
+            function fetchData() {
+                $.ajax({
+                    url: '/manual-tests/{{ $test->id }}/get-audience-questions',
+                    type: 'GET',
+                    success: function(response) {
+                        if (response.data == null) {
+                            $('#audiences-answer-container').hide();
+                            $('#audiences-question-container').hide();
+                            return;
+                        }
+                        $('#question').text(response.data.question.name);
+                        $('#a').text(response.data.question.a);
+                        $('#b').text(response.data.question.b);
+                        $('#c').text(response.data.question.c);
+                        $('#d').text(response.data.question.d);
+                        $('#correct-answer').text(response.data.question.correct_answer);
+
+                        if (response.data.show_question) {
+                            $('#audiences-question-container').show();
+                        } else {
+                            $('#audiences-question-container').hide();
+                        }
+                        if (response.data.show_answer) {
+                            $('#audiences-answer-container').show();
+                        } else {
+                            $('#audiences-answer-container').hide();
+                        }
+
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error fetching data:', error);
+                    }
+                });
+            }
+            fetchData();
+            setInterval(fetchData, 1000);
+        });
+
+        $(document).ready(function() {
+            $('#showAudienceQuestion').on('click', function() {
+                var show = $(this).data('show');
+                var testId = "{{ $test->id }}";
+                console.log(show);
+
+                $.get("/current-audience-questions/" + testId + "/" + show + "/show-question", function(
+                    data) {
+
+                });
+
+            });
+            $('#hideAudienceQuestion').on('click', function() {
+                var show = $(this).data('show');
+                var testId = "{{ $test->id }}";
+                console.log(show);
+
+                $.get("/current-audience-questions/" + testId + "/" + show + "/show-question", function(
+                    data) {
+
+                });
+
+            });
+            $('#showAudienceAnswer').on('click', function() {
+                var show = $(this).data('show');
+                var testId = "{{ $test->id }}";
+                console.log(show);
+
+                $.get("/current-audience-answers/" + testId + "/" + show + "/show-answer", function(data) {
+
+                });
+
+            });
+            $('#hideAudienceAnswer').on('click', function() {
+                var show = $(this).data('show');
+                var testId = "{{ $test->id }}";
+                console.log(show);
+
+                $.get("/current-audience-answers/" + testId + "/" + show + "/show-answer", function(data) {
+
+                });
+
+            });
+
+        });
+    </script>
+    <script>
         var questionTimer = 0;
         var answerTimer = 0;
         var questionSecondsRemaining = 0;
@@ -199,8 +340,6 @@
                     var responseData = JSON.parse(this.responseText);
                     if (responseData.data.question_id === null) {
                         document.querySelector('.testEnded').style.display = 'block';
-
-                        // window.location.href = "{{ route('handle-teams.index') }}";
                         return;
                     }
 
@@ -256,7 +395,6 @@
             clearInterval(questionTimer);
             clearInterval(answerTimer);
             answerSubmitted = false;
-            enableFormInputs();
         }
 
         updateCountdown();
@@ -264,105 +402,6 @@
         function selectAnswer(answerId) {
             document.getElementById(answerId).checked = true;
         }
-
-        // submiting form start
-        document.getElementById('testForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
-
-            // Get form data
-            var formData = new FormData(this);
-
-            // Make AJAX request
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function() {
-                if (this.readyState == 4) {
-                    if (this.status == 200) {
-                        // Handle successful response
-                        console.log('Form submitted successfully');
-                    } else {
-                        // Handle error response
-                        console.error('Form submission failed');
-                    }
-                }
-            };
-            xhr.open('POST', this.action);
-            xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}'); // Add CSRF token header
-            xhr.send(formData);
-
-            // Disable form inputs
-            disableFormInputs();
-        });
-
-        function disableFormInputs() {
-            // Disable all input elements in the form
-            var formInputs = document.getElementById('testForm').querySelectorAll('input');
-            formInputs.forEach(function(input) {
-                input.disabled = true;
-            });
-        }
-
-        function enableFormInputs() {
-            // Enable all input elements in the form
-            var formInputs = document.getElementById('testForm').querySelectorAll('input');
-            formInputs.forEach(function(input) {
-                input.disabled = false;
-            });
-        }
-        // submitting form end
-        function updateTestData(testId, loopIndex) {
-            $.ajax({
-                url: '/admin/' + testId + '/update-tests-data',
-                type: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    if (response.data && response.data.currentTests && Array.isArray(response.data
-                            .currentTests)) {
-                        var testElement = $('#test-' + testId + '-' + loopIndex);
-                        var teamListHtml = '';
-
-                        $.each(response.data.currentTests, function(_, test) {
-                            testElement.find('#start-time-' + testId).text('Starts: ' +
-                                test.start_time);
-
-                            // Sort teams based on points (descending order)
-                            test.group.teams.sort(function(a, b) {
-                                return b.pivot.points - a.pivot.points;
-                            });
-
-                            $.each(test.group.teams, function(index, team) {
-                                teamListHtml +=
-                                    '<li class="list-group-item d-flex justify-content-between align-items-center">' +
-                                    '<span class="badge badge-primary badge-pill">' + (index +
-                                        1) + '</span>' +
-                                    '<span class="team-name">' + team.name + '</span>' +
-                                    '<span class="badge badge-success badge-pill">' + team.pivot
-                                    .points + '</span>' +
-                                    '</li>' +
-                                    '<hr class="my-1">';
-                            });
-                        });
-
-                        testElement.find('.team-list').html(teamListHtml);
-                    } else {
-                        console.error('Invalid response format:', response);
-                    }
-                },
-
-                error: function(error) {
-                    console.error('Error updating test data:', error);
-                }
-            });
-        }
-
-        $(document).ready(function() {
-            $('.test-card').each(function() {
-                var testId = $(this).attr('id').split('-')[1];
-                var loopIndex = $(this).attr('id').split('-')[2];
-                setInterval(function() {
-                    updateTestData(testId, loopIndex);
-                }, 5000);
-            });
-        });
     </script>
 @endsection
 @section('style')

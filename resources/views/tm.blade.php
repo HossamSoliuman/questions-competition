@@ -1,32 +1,33 @@
-@extends('layouts.app')
-@section('content')
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your View</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body class="bg-light">
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="page-header">
-                <h1 class="display-4 text-center">Current Test: {{ $test->name }}</h1>
+                <h1 class="display-4 text-center">Current Test:</h1>
             </div>
             <div class="container">
-                <a href="{{ route('admin.index') }}">Exit Main Screen</a>
+                <a href="">Exit Main Screen</a>
                 <div class="row">
                     <div class="col">
                         <h2 class="section-title text-center">Current Test Group Standing</h2>
-                        <div class="card test-card mb-5" id="test-{{ $test->id }}-1">
+                        <div class="card test-card mb-5" id="test--1">
                             <div class="card-header">
-                                <h3 class="test-title">{{ $test->name }}</h3>
+                                <h3 class="test-title"></h3>
                             </div>
                             <div class="card-body">
-                                <p class="test-start" id="start-time-{{ $test->id }}">Starts:
-                                    {{ $test->start_time }}</p>
-                                <ul class="list-group team-list">
-                                    @foreach ($test->group->teams->sortByDesc('pivot.points') as $team)
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            <span class="badge badge-primary badge-pill">{{ $loop->iteration }}</span>
-                                            <span class="team-name">{{ $team->name }}</span>
-                                            <span class="badge badge-success badge-pill">{{ $team->pivot->points }}</span>
-                                        </li>
-                                        <hr class="my-1">
-                                    @endforeach
-                                </ul>
+                                <p class="test-start" id="start-time-">Starts:
+                                </p>
+
                             </div>
                         </div>
                     </div>
@@ -34,7 +35,7 @@
                         <h2 class="section-title text-center">Audience Questions</h2>
                         <div class="row justify-content-center">
                             <div class="col-md-12">
-                                <div id="audiences-question-container" class="bg-light p-4 rounded shadow mb-4 ">
+                                <div id="audiences-question-container" class="bg-light p-4 rounded shadow mb-4">
                                     <h3 id="question" class="text-primary mb-4"></h3>
 
                                     <div class="row">
@@ -68,7 +69,7 @@
                                     </div>
                                 </div>
 
-                                <div id="audiences-answer-container" class="bg-light p-4 rounded shadow mb-4 ">
+                                <div id="audiences-answer-container" class="bg-light p-4 rounded shadow mb-4">
                                     <p class="mb-0">Correct Answer is: <span id="correct-answer"
                                             class="font-weight-bold text-success"></span></p>
                                 </div>
@@ -82,24 +83,30 @@
     </div>
     {{-- current teams view --}}
     <div class="row">
-        @include('admin.manual_test_teams_view')
-    </div>
-@endsection
-{{-- @section('scripts')
 
+    </div>
+        <!-- Bootstrap JS and jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <!-- Your custom script -->
+    
     <script>
+
         function updateTestData(testId, loopIndex) {
             $.ajax({
                 url: '/admin/' + testId + '/update-tests-data',
                 type: 'GET',
                 dataType: 'json',
                 success: function(response) {
-                    if (response.data && response.data.currentTests && Array.isArray(response.data.currentTests)) {
+                    if (response.data && response.data.currentTests && Array.isArray(response.data
+                            .currentTests)) {
                         var testElement = $('#test-' + testId + '-' + loopIndex);
                         var teamListHtml = '';
 
                         $.each(response.data.currentTests, function(_, test) {
-                            testElement.find('#start-time-' + testId).text('Starts: ' + test.start_time);
+                            testElement.find('#start-time-' + testId).text('Starts: ' + test
+                                .start_time);
 
                             // Sort teams based on points (descending order)
                             test.group.teams.sort(function(a, b) {
@@ -109,9 +116,11 @@
                             $.each(test.group.teams, function(index, team) {
                                 teamListHtml +=
                                     '<li class="list-group-item d-flex justify-content-between align-items-center">' +
-                                    '<span class="badge badge-primary badge-pill">' + (index + 1) + '</span>' +
+                                    '<span class="badge badge-primary badge-pill">' + (index +
+                                        1) + '</span>' +
                                     '<span class="team-name">' + team.name + '</span>' +
-                                    '<span class="badge badge-success badge-pill">' + team.pivot.points + '</span>' +
+                                    '<span class="badge badge-success badge-pill">' + team.pivot
+                                    .points + '</span>' +
                                     '</li>' +
                                     '<hr class="my-1">';
                             });
@@ -145,6 +154,7 @@
                     url: '/manual-tests/6/get-audience-questions',
                     type: 'GET',
                     success: function(data) {
+                        console.log(data);
                         if (data.data.show_question) {
                             $('#audiences-question-container').show();
                         } else {
@@ -167,9 +177,15 @@
                     }
                 });
             }
+
             fetchData();
             setInterval(fetchData, 5000);
         });
-
     </script>
-@endsection --}}
+
+
+
+
+</body>
+
+</html>
