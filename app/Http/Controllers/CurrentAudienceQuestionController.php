@@ -48,7 +48,7 @@ class CurrentAudienceQuestionController extends Controller
         }
         $test = CurrentAudienceQuestion::create([
             'test_id' => $test_id,
-            'show_question' => 1,
+            'show_question' => 0,
             'show_answer' => 0,
         ]);
         return $test;

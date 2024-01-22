@@ -101,24 +101,42 @@
     <div class="row">
         <div class="col text-center">
             <h3 class="mb-3">Audience Section</h3>
+
+            <form action="{{ route('manual-test.setRandomAudienceNumber', ['test' => $test->id]) }}" method="post">
+                @csrf
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="maxAudiences">Max Audiences:</label>
+                            <input type="number" class="form-control" id="maxAudiences" name="maxAudiences"
+                                placeholder="Enter max audiences" required>
+                        </div>
+                        <button type="button" class="btn btn-success" id="generateRandomAudience">Generate Random Audience
+                            Number</button>
+                        <div class="form-group">
+                            <label for="randomAudience">Random Audience Number:</label>
+                            <input type="text" name="number" class="form-control" id="randomAudience" readonly>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="row align-items-center">
+                            <input class="btn-primary btn mb-3" type="submit" value="Approve">
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <form action="{{ route('manual-test.setRandomAudienceNumber', ['test' => $test->id]) }}" method="post">
+                @csrf
+                <div class="">
+                    <input type="hidden" name="number" value="0">
+                    <input class="btn-danger btn mb-3" type="submit" value="Hide From main screen">
+                </div>
+            </form>
+            <hr>
             <form id="setQuestionForm" action="{{ route('audience-questions.set') }}" method="post">
                 @csrf
                 <input type="hidden" name="test_id" value="{{ $test->id }}">
-
-                <!-- Add input for max audiences -->
-                <div class="form-group">
-                    <label for="maxAudiences">Max Audiences:</label>
-                    <input type="number" class="form-control" id="maxAudiences" name="maxAudiences" placeholder="Enter max audiences" required>
-                </div>
-
-                <!-- Add button to generate random audience number -->
-                <button type="button" class="btn btn-success" id="generateRandomAudience">Generate Random Audience Number</button>
-
-                <div class="form-group">
-                    <label for="randomAudience">Random Audience Number:</label>
-                    <input type="text" class="form-control" id="randomAudience" readonly>
-                </div>
-
                 <button type="submit" class="btn btn-primary">Set Question</button>
             </form>
 
@@ -126,7 +144,7 @@
             <button class="btn btn-warning" id="hideAudienceQuestion" data-show="0">Hide Question</button>
 
             <script>
-                document.getElementById('generateRandomAudience').addEventListener('click', function () {
+                document.getElementById('generateRandomAudience').addEventListener('click', function() {
                     var maxAudiences = document.getElementById('maxAudiences').value;
                     var randomAudience = Math.floor(Math.random() * maxAudiences) + 1;
                     document.getElementById('randomAudience').value = randomAudience;

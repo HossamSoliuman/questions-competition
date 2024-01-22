@@ -118,6 +118,9 @@ Route::get('manual-test/{test}/end-test', [ManualTestController::class, 'endTest
 Route::get('manual-test/{question}/{test}/answer', [ManualTestController::class, 'correctAnswer'])
     ->name('manual-test.answer');
 
+Route::post('manual-test/{test}/setRandomAudienceNumber', [ManualTestController::class, 'setRandomAudienceNumber'])
+    ->name('manual-test.setRandomAudienceNumber');
+
 //////////////////
 Route::post('manual-test/{test}/send-answer', [ManualTestController::class, 'sendAnswer'])
     ->name('manual-test.sendAnswer');

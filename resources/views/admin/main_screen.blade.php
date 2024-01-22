@@ -33,6 +33,10 @@
                     <div class="col">
                         <h2 class="section-title text-center">Audience Questions</h2>
                         <div class="row justify-content-center">
+                            <div id="randomNumberBox" class="col-md-6 bg-info text-white p-3 rounded shadow mb-4">
+                                <p class="mb-0">Random Number: <span style="font-size: 2em;" class="font-weight-bold" id="randomNumber"></span></p>
+                            </div>
+
                             <div class="col-md-12">
                                 <div id="audiences-question-container" class="bg-light p-4 rounded shadow mb-4 ">
                                     <h3 id="question" class="text-primary mb-4"></h3>

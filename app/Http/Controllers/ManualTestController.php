@@ -199,9 +199,20 @@ class ManualTestController extends Controller
     public function getAudienceQuestions(Test $test)
     {
         $audienceQuestion = CurrentAudienceQuestion::with('question')->where('test_id', $test->id)->first();
-        if (!$audienceQuestion || !$audienceQuestion->question) {
+
+        if (!$audienceQuestion) {
             $audienceQuestion = null;
         }
         return $this->successResponse($audienceQuestion);
+    }
+    public function setRandomAudienceNumber(Request $request, $test)
+    {
+        $number = $request->number;
+        $audienceQuestion = new CurrentAudienceQuestionController;
+        $audienceQuestion = $audienceQuestion->testExist($test);
+        $audienceQuestion->update([
+            'random_number' => $number
+        ]);
+        return redirect()->route('manual-tests.index', ['test' => $test]);
     }
 }

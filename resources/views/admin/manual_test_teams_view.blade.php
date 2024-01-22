@@ -152,6 +152,17 @@
                             $('#audiences-question-container').hide();
                             return;
                         }
+                        if (response.data.random_number !=0 ) {
+                            $('#randomNumberBox').show();
+                            $('#randomNumber').text(response.data.random_number);
+                        }else{
+                            $('#randomNumberBox').hide();
+                        }
+                        if (response.data.question == null) {
+                            $('#audiences-answer-container').hide();
+                            $('#audiences-question-container').hide();
+                            return;
+                        }
                         $('#question').text(response.data.question.name);
                         $('#a').text(response.data.question.a);
                         $('#b').text(response.data.question.b);

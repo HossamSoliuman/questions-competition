@@ -13,6 +13,7 @@ class CurrentAudienceQuestion extends Model
         'test_id',
         'show_question',
         'show_answer',
+        'random_number',
     ];
     public function question()
     {
