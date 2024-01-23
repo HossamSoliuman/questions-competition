@@ -48,7 +48,12 @@
                             <div class="card test-card" id="test-{{ $test->id }}">
                                 <div class="card-header">
                                     <h3 class="test-title">{{ $test->name }}</h3>
-                                    <a href="{{ route('manual-tests.index', ['test' => $test->id]) }}">Enter Test</a>
+                                    <div class="mb-2">
+                                        <a class="" href="{{ route('manual-tests.index', ['test' => $test->id]) }}">Enter To Manageing Test</a>
+                                    </div>
+                                    <div class="">
+                                        <a class="mb-2" href="{{ route('manual-tests.mainScreen', ['test' => $test->id]) }}">Enter To Main Screen</a>
+                                    </div>
                                 </div>
                                 <div class="card-body">
                                     <p class="test-start" id="start-time-{{ $test->id }}">Starts:

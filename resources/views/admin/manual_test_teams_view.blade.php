@@ -150,6 +150,8 @@
                         if (response.data == null) {
                             $('#audiences-answer-container').hide();
                             $('#audiences-question-container').hide();
+                            $('#randomNumberBox').hide();
+
                             return;
                         }
                         if (response.data.random_number !=0 ) {
@@ -168,7 +170,7 @@
                         $('#b').text(response.data.question.b);
                         $('#c').text(response.data.question.c);
                         $('#d').text(response.data.question.d);
-                        $('#correct-answer').text(response.data.question.correct_answer);
+                        $('#audience-correct-answer').text(response.data.question.correct_answer);
 
                         if (response.data.show_question) {
                             $('#audiences-question-container').show();
@@ -236,8 +238,6 @@
             });
 
         });
-    </script>
-    <script>
         var questionTimer = 0;
         var answerTimer = 0;
         var questionSecondsRemaining = 0;

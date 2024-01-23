@@ -34,7 +34,8 @@
                         <h2 class="section-title text-center">Audience Questions</h2>
                         <div class="row justify-content-center">
                             <div id="randomNumberBox" class="col-md-6 bg-info text-white p-3 rounded shadow mb-4">
-                                <p class="mb-0">Random Number: <span style="font-size: 2em;" class="font-weight-bold" id="randomNumber"></span></p>
+                                <p class="mb-0">Random Number: <span style="font-size: 2em;" class="font-weight-bold"
+                                        id="randomNumber"></span></p>
                             </div>
 
                             <div class="col-md-12">
@@ -73,7 +74,7 @@
                                 </div>
 
                                 <div id="audiences-answer-container" class="bg-light p-4 rounded shadow mb-4 ">
-                                    <p class="mb-0">Correct Answer is: <span id="correct-answer"
+                                    <p class="mb-0">Correct Answer is: <span id="audience-correct-answer"
                                             class="font-weight-bold text-success"></span></p>
                                 </div>
                             </div>
