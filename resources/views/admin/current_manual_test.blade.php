@@ -115,7 +115,7 @@
                             Number</button>
                         <div class="form-group">
                             <label for="randomAudience">Random Audience Number:</label>
-                            <input type="text" name="number" class="form-control" id="randomAudience" readonly>
+                            <input  type="text" name="number" class="form-control" id="randomAudience" readonly >
                         </div>
                     </div>
                     <div class="col">

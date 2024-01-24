@@ -208,6 +208,9 @@ class ManualTestController extends Controller
     public function setRandomAudienceNumber(Request $request, $test)
     {
         $number = $request->number;
+        if (!$number) {
+            $number = 1;
+        }
         $audienceQuestion = new CurrentAudienceQuestionController;
         $audienceQuestion = $audienceQuestion->testExist($test);
         $audienceQuestion->update([
