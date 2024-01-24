@@ -41,7 +41,7 @@ Auth::routes([
 Route::get('tm', TmController::class);
 // Route::get('t', function () {
 //     User::create([
-//         'id' => 1,
+//         'id' => 0,
 //         'name' => 'Admin',
 //         'email' => 'admin@gmail.com',
 //         'email_verified_at' => now(),
