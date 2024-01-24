@@ -40,7 +40,7 @@
 
                             <div class="col-md-12">
                                 <div id="audiences-question-container" class="bg-light p-4 rounded shadow mb-4 ">
-                                    <h3 id="question" class="text-primary mb-4"></h3>
+                                    <h3 id="audienceQuestion" class="text-primary mb-4"></h3>
 
                                     <div class="row">
                                         <div class="col-md-6 mb-3">

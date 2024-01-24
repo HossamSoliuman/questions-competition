@@ -165,7 +165,7 @@
                             $('#audiences-question-container').hide();
                             return;
                         }
-                        $('#question').text(response.data.question.name);
+                        $('#audienceQuestion').text(response.data.question.name);
                         $('#a').text(response.data.question.a);
                         $('#b').text(response.data.question.b);
                         $('#c').text(response.data.question.c);
