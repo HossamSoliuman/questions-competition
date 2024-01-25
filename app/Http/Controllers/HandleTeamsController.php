@@ -23,8 +23,8 @@ class HandleTeamsController extends Controller
         $commingTests = Test::with('group.teams')->whereHas('group.teams', function ($query) use ($team) {
             $query->where('teams.id', $team);
         })->where('status', Test::COMMING)->orderBy('start_time', 'desc')->get();
-
-        return view('teams.index', compact('pastTests', 'commingTests','currentTests'));
+        $team = auth()->user();
+        return view('teams.index', compact('pastTests', 'commingTests', 'currentTests','team'));
     }
     public function viewTest(Test $test)
     {

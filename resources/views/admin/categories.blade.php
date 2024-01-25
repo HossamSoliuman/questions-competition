@@ -4,12 +4,11 @@
         <div class="row justify-content-center mt-5">
             <div class="col-md-11">
                 <h1>Categories</h1>
-                <!-- Button trigger modal -->
                 <button type="button" class=" mb-3 btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">
                     Create a new Category
                 </button>
 
-                <!-- Modal -->
+                <!--Creating Modal -->
                 <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
                     role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                     <div class="modal-dialog">
@@ -96,30 +95,16 @@
             </div>
         </div>
     </div>
-    <!-- Add this script at the end of your HTML file or in a separate JS file -->
     <script>
         $(document).ready(function() {
-            // Attach click event to each "Edit" button
             $('.btn-edit').on('click', function() {
-                // Get the category name from the table row
                 var categoryName = $(this).closest('tr').find('.category-name').text();
-
-                // Set the category name in the edit modal input field
                 $('#editModal input[name="name"]').val(categoryName);
-
-                // Get the category ID from the current table row
                 var categoryId = $(this).closest('tr').data('category-id');
-
-                // Set the form action with the dynamic category ID
                 $('#editForm').attr('action', '/categories/' + categoryId);
-
-                // Show the edit modal
                 $('#editModal').modal('show');
             });
-
-            // Attach click event to the "Save Changes" button
             $('#saveChangesBtn').on('click', function() {
-                // Submit the form when the button is clicked
                 $('#editForm').submit();
             });
         });

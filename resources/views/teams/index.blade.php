@@ -6,6 +6,7 @@
     </form>
 
     <div class="container">
+        <h2 class="text-center">{{ $team->name }}</h2>
         <h3>Current Tests</h3>
         <div class="row">
             @foreach ($currentTests as $test)
