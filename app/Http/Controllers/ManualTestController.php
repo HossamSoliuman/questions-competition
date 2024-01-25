@@ -125,6 +125,9 @@ class ManualTestController extends Controller
     public function getQuestion($test)
     {
         $currentTest = ManualTest::where('test_id', $test)->first();
+        if (!$currentTest) {
+            return $this->successResponse(null);
+        }
         $question = Question::find($currentTest->question_id);
         $data = $question;
         if ($currentTest) {

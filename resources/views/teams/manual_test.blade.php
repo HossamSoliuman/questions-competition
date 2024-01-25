@@ -190,11 +190,18 @@
             myRequest.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
                     var responseData = JSON.parse(this.responseText);
+
+                    if (responseData.data == null) {
+                        setTimeout(function() {
+                            getQuestion();
+                        }, 1000)
+                        console.log('equel null');
+                        return;
+                    }
                     if (responseData.data.question_id === null) {
                         window.location.href = "{{ route('handle-teams.index') }}";
                         return;
                     }
-
                     var startTime = new Date(responseData.data.question_start_at).getTime();
                     var endTime = startTime + ({{ $test->question_time }} * 1000);
                     var remainingTime = endTime - new Date().getTime();

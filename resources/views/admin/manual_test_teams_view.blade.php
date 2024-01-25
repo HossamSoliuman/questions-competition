@@ -154,10 +154,10 @@
 
                             return;
                         }
-                        if (response.data.random_number !=0 ) {
+                        if (response.data.random_number != 0) {
                             $('#randomNumberBox').show();
                             $('#randomNumber').text(response.data.random_number);
-                        }else{
+                        } else {
                             $('#randomNumberBox').hide();
                         }
                         if (response.data.question == null) {
@@ -349,6 +349,15 @@
             myRequest.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
                     var responseData = JSON.parse(this.responseText);
+
+                    if (responseData.data == null) {
+                        setTimeout(function() {
+                            getQuestion();
+                        }, 1000)
+                        console.log('equel null');
+                        return;
+                    }
+
                     if (responseData.data.question_id === null) {
                         document.querySelector('.testEnded').style.display = 'block';
                         return;
