@@ -7,31 +7,10 @@
             </div>
             <div class="container">
                 <a href="{{ route('admin.index') }}">Exit Main Screen</a>
+
+                <!-- Second row for "Audience Questions" section -->
                 <div class="row">
                     <div class="col">
-                        <h2 class="section-title text-center">Current Test Group Standing</h2>
-                        <div class="card test-card mb-5" id="test-{{ $test->id }}-1">
-                            <div class="card-header">
-                                <h3 class="test-title">{{ $test->name }}</h3>
-                            </div>
-                            <div class="card-body">
-                                <p class="test-start" id="start-time-{{ $test->id }}">Starts:
-                                    {{ $test->start_time }}</p>
-                                <ul class="list-group team-list">
-                                    @foreach ($test->group->teams->sortByDesc('pivot.points') as $team)
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            <span class="badge badge-primary badge-pill">{{ $loop->iteration }}</span>
-                                            <span class="team-name">{{ $team->name }}</span>
-                                            <span class="badge badge-success badge-pill">{{ $team->pivot->points }}</span>
-                                        </li>
-                                        <hr class="my-1">
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <h2 class="section-title text-center">Audience Questions</h2>
                         <div class="row justify-content-center">
                             <div id="randomNumberBox" class="col-md-6 bg-info text-white p-3 rounded shadow mb-4">
                                 <p class="mb-0">Random Number: <span style="font-size: 2em;" class="font-weight-bold"
@@ -40,6 +19,7 @@
 
                             <div class="col-md-12">
                                 <div id="audiences-question-container" class="bg-light p-4 rounded shadow mb-4 ">
+                                    <h2 class="section-title text-center">Audience Questions</h2>
                                     <h3 id="audienceQuestion" class="text-primary mb-4"></h3>
 
                                     <div class="row">
@@ -78,13 +58,40 @@
                                             class="font-weight-bold text-success"></span></p>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
+
+                <!-- First row for "Current Test Group Standing" section -->
+                <div class="row">
+                    <div class="col">
+                        <h2 class="section-title text-center">Current Test Group Standing</h2>
+                        <div class="card test-card mb-5" id="test-{{ $test->id }}-1">
+                            <div class="card-header">
+                                <h3 class="test-title">{{ $test->name }}</h3>
+                            </div>
+                            <div class="card-body">
+                                <p class="test-start" id="start-time-{{ $test->id }}">Starts:
+                                    {{ $test->start_time }}</p>
+                                <ul class="list-group team-list">
+                                    @foreach ($test->group->teams->sortByDesc('pivot.points') as $team)
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span class="badge badge-primary badge-pill">{{ $loop->iteration }}</span>
+                                            <span class="team-name">{{ $team->name }}</span>
+                                            <span class="badge badge-success badge-pill">{{ $team->pivot->points }}</span>
+                                        </li>
+                                        <hr class="my-1">
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
+
     {{-- current teams view --}}
     <div class="row">
         @include('admin.manual_test_teams_view')

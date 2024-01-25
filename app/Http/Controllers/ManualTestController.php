@@ -209,7 +209,7 @@ class ManualTestController extends Controller
     {
         $number = $request->number;
         if (!$number) {
-            $number = 1;
+            $number = 0;
         }
         $audienceQuestion = new CurrentAudienceQuestionController;
         $audienceQuestion = $audienceQuestion->testExist($test);
