@@ -115,7 +115,7 @@
                             Number</button>
                         <div class="form-group">
                             <label for="randomAudience">Random Audience Number:</label>
-                            <input  type="text" name="number" class="form-control" id="randomAudience" readonly >
+                            <input type="text" name="number" class="form-control" id="randomAudience" readonly>
                         </div>
                     </div>
                     <div class="col">
@@ -188,13 +188,12 @@
         @include('admin.manual_test_teams_view')
     </div>
     </div>
-    {{-- </section> --}}
-    {{-- current teams view --}}
 
 @endsection
 
 @section('scripts')
     <script>
+        //update stading
         function updateTestData(testId, loopIndex) {
             $.ajax({
                 url: '/admin/' + testId + '/update-tests-data',
@@ -207,8 +206,8 @@
                         var teamListHtml = '';
 
                         $.each(response.data.currentTests, function(_, test) {
-                            testElement.find('#start-time-' + testId).text('Starts: ' +
-                                test.start_time);
+                            testElement.find('#start-time-' + testId).text('Starts: ' + test
+                                .start_time);
 
                             test.group.teams.sort(function(a, b) {
                                 return b.pivot.points - a.pivot.points;
@@ -248,5 +247,238 @@
                 }, 5000);
             });
         });
+        //end updating standing
+
+        //start show or hide audienc questions
+        $(document).ready(function() {
+            $('#showAudienceQuestion').on('click', function() {
+                var show = $(this).data('show');
+                var testId = "{{ $test->id }}";
+                console.log(show);
+
+                $.get("/current-audience-questions/" + testId + "/" + show + "/show-question", function(
+                    data) {
+
+                });
+
+            });
+            $('#hideAudienceQuestion').on('click', function() {
+                var show = $(this).data('show');
+                var testId = "{{ $test->id }}";
+                console.log(show);
+
+                $.get("/current-audience-questions/" + testId + "/" + show + "/show-question", function(
+                    data) {
+
+                });
+
+            });
+            $('#showAudienceAnswer').on('click', function() {
+                var show = $(this).data('show');
+                var testId = "{{ $test->id }}";
+                console.log(show);
+
+                $.get("/current-audience-answers/" + testId + "/" + show + "/show-answer", function(data) {
+
+                });
+
+            });
+            $('#hideAudienceAnswer').on('click', function() {
+                var show = $(this).data('show');
+                var testId = "{{ $test->id }}";
+                console.log(show);
+
+                $.get("/current-audience-answers/" + testId + "/" + show + "/show-answer", function(data) {
+
+                });
+
+            });
+
+        });
+        //end show or hide questions
+
+        //teams view start
+        var questionTimer = 0;
+        var answerTimer = 0;
+        var questionSecondsRemaining = 0;
+        var answerSecondsRemaining = 0;
+        var answerSubmitted = false;
+
+        document.querySelector('.test-questions').style.display = 'none';
+        document.querySelector('.answer-info').style.display = 'none';
+        document.querySelector('.testEnded').style.display = 'none';
+
+
+        function updateCountdown() {
+            var startTime = new Date('{{ $test->start_time }}').getTime();
+            var currentTime = new Date().getTime();
+            var timeRemaining = startTime - currentTime;
+
+            if (timeRemaining > 0) {
+                var days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+                document.getElementById('countdown').innerHTML =
+                    'Time remaining: ' + days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
+                setTimeout(updateCountdown, 1000);
+            } else {
+                document.getElementById('countdown').innerHTML = 'Test has started!';
+
+                var startTime = new Date('{{ $test->question_start_at }}').getTime();
+                var remainingTime = startTime - new Date().getTime();
+                remainingTime = Math.ceil(remainingTime / 1000);
+
+                questionRemaining = Math.max(remainingTime, 0);
+
+                setTimeout(function() {
+                    getQuestion();
+                }, questionRemaining * 1000);
+
+            }
+        }
+
+        function updateQuestionTimerDisplay(seconds) {
+            document.getElementById('question-timer').innerHTML = seconds;
+        }
+
+        function updateAnswerTimerDisplay(seconds) {
+            document.getElementById('answer-timer').innerHTML = seconds;
+        }
+
+        function correctAnswer(questionId) {
+            var formData = new FormData();
+            formData.append('question_id', questionId);
+            formData.append('_token', '{{ csrf_token() }}');
+
+            var myRequest = new XMLHttpRequest();
+            myRequest.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var responseData = JSON.parse(this.responseText);
+
+
+                    document.getElementById('answer-question').innerHTML = responseData.data.name;
+                    document.getElementById('correct-answer').innerHTML = 'Correct Answer: ' + responseData.data
+                        .correct_answer;
+                    document.getElementById('corrcorrect-team-answer').innerHTML = 'First Correct Team Answer: ' +
+                        responseData.data.corrcorrectTeamAnswer;
+
+
+                    document.querySelector('.test-questions').style.display = 'none';
+                    document.querySelector('.answer-info').style.display = 'block';
+
+                    answerSecondsRemaining = {{ $test->answer_time }};
+                    updateAnswerTimerDisplay(answerSecondsRemaining);
+
+                    answerTimer = setInterval(function() {
+                        updateAnswerTimerDisplay(--answerSecondsRemaining);
+                        if (answerSecondsRemaining <= 0) {
+                            clearInterval(answerTimer);
+                            getQuestion();
+                        }
+                    }, 1000);
+                }
+                answerSubmitted = true;
+            };
+
+            var route =
+                "{{ route('manual-test.answer', ['test' => $test->id, 'question' => ':question_id']) }}";
+            route = route.replace(':question_id', questionId);
+
+            myRequest.open("GET", route);
+            myRequest.send(formData);
+        }
+
+        // Define a function to call getQuestion
+        function startQuestionInterval() {
+            getQuestion(); // Call getQuestion immediately
+
+            // Set up an interval to call getQuestion every second
+            setInterval(function() {
+                getQuestion();
+            }, 1000);
+        }
+
+        // Call the startQuestionInterval function to initiate the process
+
+        function getQuestion() {
+            var myRequest = new XMLHttpRequest();
+            myRequest.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var responseData = JSON.parse(this.responseText);
+
+                    if (responseData.data == null) {
+                        setTimeout(function() {
+                            getQuestion();
+                        }, 1000)
+                        console.log('equel null');
+                        return;
+                    }
+
+                    if (responseData.data.question_id === null) {
+                        document.querySelector('.testEnded').style.display = 'block';
+                        return;
+                    }
+
+                    var startTime = new Date(responseData.data.question_start_at).getTime();
+                    var endTime = startTime + ({{ $test->question_time }} * 1000);
+                    var remainingTime = endTime - new Date().getTime();
+                    remainingTime = Math.ceil(remainingTime / 1000);
+                    questionSecondsRemaining = Math.max(remainingTime, 0)
+
+                    if (questionSecondsRemaining == 0) {
+                        document.querySelector('.test-questions').style.display = 'none';
+                        document.querySelector('.answer-info').style.display = 'none';
+                        setTimeout(function() {
+                            getQuestion();
+                        }, 1000)
+                        return;
+                    }
+
+                    var questionId = responseData.data.id;
+                    document.getElementById('question').innerHTML = responseData.data.name;
+                    document.getElementById('question_id').value = responseData.data.question_id;
+                    document.getElementById('label-a').innerHTML = 'a: ' + responseData.data.a;
+                    document.getElementById('label-b').innerHTML = 'b: ' + responseData.data.b;
+                    document.getElementById('label-c').innerHTML = 'c: ' + responseData.data.c;
+                    document.getElementById('label-d').innerHTML = 'd: ' + responseData.data.d;
+
+
+                    document.querySelector('.test-questions').style.display = 'block';
+                    document.querySelector('.answer-info').style.display = 'none';
+
+                    var startTime = new Date(responseData.data.question_start_at).getTime();
+                    var endTime = startTime + ({{ $test->question_time }} * 1000);
+                    var remainingTime = endTime - new Date().getTime();
+                    remainingTime = Math.ceil(remainingTime / 1000);
+
+                    questionSecondsRemaining = Math.max(remainingTime, 0)
+                    updateQuestionTimerDisplay(questionSecondsRemaining);
+
+
+                    questionTimer = setInterval(function() {
+                        updateQuestionTimerDisplay(--questionSecondsRemaining);
+                        if (questionSecondsRemaining <= 0) {
+                            clearInterval(questionTimer);
+                            correctAnswer(questionId);
+                        }
+                    }, 1000);
+                }
+            };
+
+            myRequest.open("GET", "{{ route('manual-test.question', ['test' => $test->id]) }}");
+            myRequest.send();
+
+            clearInterval(questionTimer);
+            clearInterval(answerTimer);
+            answerSubmitted = false;
+        }
+
+        updateCountdown();
+
+        function selectAnswer(answerId) {
+            document.getElementById(answerId).checked = true;
+        }
     </script>
 @endsection
