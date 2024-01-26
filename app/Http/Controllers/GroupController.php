@@ -15,19 +15,25 @@ use Illuminate\Http\Request as HttpRequest;
 
 class GroupController extends LichtBaseController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $groups = Group::with('teams')->orderBy('id', 'desc')->paginate(2);
-        $allTeams = Team::all();
         $allCompetitions = Competition::orderBy('id', 'desc')->get();
-        return view('admin.groups', compact('groups', 'allTeams', 'allCompetitions'));
+        $allTeams = Team::all();
+        foreach ($groups as $group) {
+            $competitionId = $group->competition_id;
+            $round = $group->round;
+            $competitionGroups = Competition::with(['groups' => function ($query) use ($round) {
+                $query->where('round', $round);
+            }, 'groups.teams'])->find($competitionId);
+            $alreadyAddedTeams = $competitionGroups->groups->flatMap(function ($group) {
+                return $group->teams;
+            });
+            $teamsNotAdded = $allTeams->diff($alreadyAddedTeams);
+            $group->allowedAddedTeams = $teamsNotAdded;
+        }
+        return view('admin.groups', compact('groups', 'allCompetitions'));
     }
-
     /**
      * Store a newly created resource in storage.
      *

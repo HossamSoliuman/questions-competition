@@ -115,7 +115,7 @@
                                         <div class="input-group">
                                             <select name="team_id"
                                                 class="form-control custom-select"><!-- Added class 'custom-select' -->
-                                                @foreach ($allTeams as $team)
+                                               @foreach ($group->allowedAddedTeams as $team)
                                                     <option value="{{ $team->id }}">{{ $team->name }}</option>
                                                 @endforeach
                                             </select>
