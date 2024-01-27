@@ -73,20 +73,27 @@
                     </thead>
                     <tbody>
                         @foreach ($categories as $category)
-                            <tr data-category-id="{{ $category->id }}">
-                                <td class="category-name">{{ $category->name }}</td>
-                                <td class="d-flex">
-                                    <button type="button" class="btn btn-warning btn-edit" data-toggle="modal"
-                                        data-target="#editModal">
-                                        Edit
-                                    </button>
-                                    <form action="{{ route('categories.destroy', ['category' => $category->id]) }}"
-                                        method="post">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class=" ml-3 btn btn-danger">Delete</button>
-                                    </form>
-                                </td>
+                            @if ($category->id == 1)
+                                <tr data-category-id="{{ $category->id }}">
+                                    <td class="category-name">{{ $category->name }}</td>
+                                    <td></td>
+                                @else
+                                <tr data-category-id="{{ $category->id }}">
+                                    <td class="category-name">{{ $category->name }}</td>
+
+                                    <td class="d-flex">
+                                        <button type="button" class="btn btn-warning btn-edit" data-toggle="modal"
+                                            data-target="#editModal">
+                                            Edit
+                                        </button>
+                                        <form action="{{ route('categories.destroy', ['category' => $category->id]) }}"
+                                            method="post">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class=" ml-3 btn btn-danger">Delete</button>
+                                        </form>
+                                    </td>
+                            @endif
                             </tr>
                         @endforeach
 

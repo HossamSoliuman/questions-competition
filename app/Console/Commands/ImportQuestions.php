@@ -22,6 +22,9 @@ class ImportQuestions extends Command
         $csv = Reader::createFromPath($csvFilePath, 'r');
         $csv->setHeaderOffset(0);
 
+        $firstCategory = 'Audience';
+        Category::firstOrCreate(['name' => $firstCategory]);
+
         // Get distinct categories from the CSV file
         $distinctCategories = iterator_to_array($csv->fetchColumn('category'));
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CompetitionAudienceQuestion;
 use App\Models\CurrentAudienceQuestion;
 use App\Models\Question;
 use App\Models\QuestionTest;
@@ -59,21 +60,20 @@ class CurrentAudienceQuestionController extends Controller
         $test = Test::findOrFail($test_id);
         $competitionId = $test->group->competition->id;
 
-        $existingQuestionIds = QuestionTest::whereHas('test.group.competition', function ($query) use ($competitionId) {
-            $query->where('id', $competitionId);
-        })->pluck('question_id')->toArray();
+        $existingQuestionIds = CompetitionAudienceQuestion::where('competition_id', $competitionId)
+            ->pluck('question_id')->toArray();
 
         $randomQuestion = Question::inRandomOrder()
             ->whereNotIn('id', $existingQuestionIds)
+            ->where('category_id', 1)
             ->first();
+
         if (!$randomQuestion)
             return null;
         if ($randomQuestion) {
-            QuestionTest::create([
-                'test_id' => $test_id,
+            CompetitionAudienceQuestion::create([
+                'competition_id' => $competitionId,
                 'question_id' => $randomQuestion->id,
-                'set' => 1,
-                'answered' => 1,
             ]);
             $randomQuestion->update([
                 'repeated' => $randomQuestion->repeated + 1,

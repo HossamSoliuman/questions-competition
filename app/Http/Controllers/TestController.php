@@ -77,11 +77,11 @@ class TestController extends LichtBaseController
         $test->load('questions.category', 'group.competition');
         $competitionId = $test->group->competition->id;
 
-        $allQuestions = Question::whereDoesntHave('tests.group.competition', function ($query) use ($competitionId) {
+        $allQuestions = Question::where('category_id', '!=', 1)->whereDoesntHave('tests.group.competition', function ($query) use ($competitionId) {
             $query->where('id', $competitionId);
         })->get();
 
-        $categories = Category::all();
+        $categories = Category::where('id', '!=', 1)->get();
         return view('admin.test_questions', compact('allQuestions', 'test', 'categories'));
     }
 
@@ -95,12 +95,15 @@ class TestController extends LichtBaseController
         }
         return redirect()->route('tests.questions', ['test' => $request->test_id]);
     }
+
     public function removeQuestion($QuestionTest)
     {
         $QuestionTest = QuestionTest::find($QuestionTest);
         $QuestionTest->delete();
         return redirect()->route('tests.questions', ['test' => $QuestionTest->test_id]);
     }
+
+
     public function addQuestionsAuto(Request $request)
     {
         $maxRepeats = $request->max_repeats;
@@ -115,6 +118,7 @@ class TestController extends LichtBaseController
         })->pluck('question_id')->toArray();
 
         $questions = Question::inRandomOrder()
+            ->where('category_id', '!=', 1)
             ->where('repeated', '<=', $maxRepeats)
             ->whereNotIn('id', $existingQuestionIds)
             ->limit($numberOfQuestions)
@@ -174,5 +178,4 @@ class TestController extends LichtBaseController
 
         return redirect()->route('tests.questions', ['test' => $test_id]);
     }
-
 }
