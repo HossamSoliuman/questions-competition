@@ -7,6 +7,7 @@
     </form>
 
     <div class="test-info text-center">
+        <h1 class="text-center">{{ $team_name }}</h1>
         <h2>{{ $test->name }}</h2>
         <p id="countdown"></p>
         <p> Question time {{ $test->question_time }} seconds</p>

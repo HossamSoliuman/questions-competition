@@ -24,7 +24,7 @@ class HandleTeamsController extends Controller
             $query->where('teams.id', $team);
         })->where('status', Test::COMMING)->orderBy('start_time', 'desc')->get();
         $team = auth()->user();
-        return view('teams.index', compact('pastTests', 'commingTests', 'currentTests','team'));
+        return view('teams.index', compact('pastTests', 'commingTests', 'currentTests', 'team'));
     }
     public function viewTest(Test $test)
     {
@@ -34,6 +34,7 @@ class HandleTeamsController extends Controller
         }
         $answerSubmitted = 0;
         $team_id = auth()->id();
-        return view('teams.manual_test', compact('test', 'answerSubmitted', 'team_id'));
+        $team_name = auth()->user()->name;
+        return view('teams.manual_test', compact('test', 'answerSubmitted', 'team_id','team_name'));
     }
 }
