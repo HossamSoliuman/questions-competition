@@ -86,11 +86,21 @@
                         </div>
                     </form>
                 </div>
-                <form action="{{ route('manual-test.endTest', ['test' => $test->id]) }}" method="get">
+                <form id="endTestForm" action="{{ route('manual-test.endTest', ['test' => $test->id]) }}" method="get">
                     <div class="form-group">
                         <button class="btn btn-danger btn-block text-md" type="submit">End Test</button>
                     </div>
                 </form>
+
+                <script>
+                    document.getElementById('endTestForm').addEventListener('submit', function(event) {
+                        // Display a confirmation dialog before submitting the form
+                        if (!confirm('Are you sure you want to end the test?')) {
+                            event.preventDefault(); // Prevent form submission if the user cancels
+                        }
+                    });
+                </script>
+
             </div>
 
 
