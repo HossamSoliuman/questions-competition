@@ -73,126 +73,132 @@
                                         </div>
                                     </div>
                                 @endforeach
-                                <div class=" col-md-4">
-                                    <div class="form-group">
-                                        <button class="btn btn-primary btn-block text-md" type="submit">Set</button>
-                                    </div>
-                                </div>
                             @else
                                 <div class="col">
                                     <p>No more questions</p>
                                 </div>
                             @endif
                         </div>
+                        <div class="row">
+                            @if ($categories->isNotEmpty())
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <button class="btn btn-primary btn-block text-md" type="submit">Set</button>
+                                    </div>
+                                </div>
+                            @endif
+
                     </form>
+                    <form id="endTestForm" action="{{ route('manual-test.endTest', ['test' => $test->id]) }}"
+                        method="get">
+                        <div class="col">
+                            <div class="form-group">
+                                <button class="btn btn-danger btn-block text-md" type="submit">End Test</button>
+                            </div>
+
+                        </div>
+                    </form>
+
                 </div>
-                <form id="endTestForm" action="{{ route('manual-test.endTest', ['test' => $test->id]) }}" method="get">
-                    <div class="form-group">
-                        <button class="btn btn-danger btn-block text-md" type="submit">End Test</button>
-                    </div>
-                </form>
-
-                <script>
-                    document.getElementById('endTestForm').addEventListener('submit', function(event) {
-                        // Display a confirmation dialog before submitting the form
-                        if (!confirm('Are you sure you want to end the test?')) {
-                            event.preventDefault(); // Prevent form submission if the user cancels
-                        }
-                    });
-                </script>
-
             </div>
-
-
         </div>
     </div>
     {{-- audience section  --}}
     <hr>
     <div class="row">
-        <div class="col text-center">
+        <div class="col">
             <h3 class="mb-3">Audience Section</h3>
 
+            <!-- Random Audience Number Form -->
             <form action="{{ route('manual-test.setRandomAudienceNumber', ['test' => $test->id]) }}" method="post">
                 @csrf
                 <div class="row">
-                    <div class="col">
-                        <div class="form-group">
-                            <label for="maxAudiences">Max Audiences:</label>
-                            <input type="number" class="form-control" id="maxAudiences" name="maxAudiences"
-                                placeholder="Enter max audiences" required>
-                        </div>
-                        <button type="button" class="btn btn-success" id="generateRandomAudience">Generate Random Audience
-                            Number</button>
-                        <div class="form-group">
-                            <label for="randomAudience">Random Audience Number:</label>
-                            <input type="text" name="number" class="form-control" id="randomAudience" readonly>
-                        </div>
+                    <div class="form-group mr-3">
+                        <label for="maxAudiences">Max Audiences:</label>
+                        <input type="number" class="form-control" id="maxAudiences" name="maxAudiences"
+                            placeholder="Enter max audiences" required>
                     </div>
-                    <div class="col">
-                        <div class="row align-items-center">
-                            <input class="btn-primary btn mb-3" type="submit" value="Approve">
-                        </div>
+                    <div class="form-group">
+                        <label for="randomAudience">Random Audience Number:</label>
+                        <input type="text" name="number" class="form-control" id="randomAudience" readonly>
                     </div>
-                </div>
+                    <div class="d-flex">
+                        <div class="form-group mr-3">
+                            <button type="button" class="btn btn-success btn-sm" id="generateRandomAudience">Generate Random
+                                Audience
+                                Number</button>
+                        </div>
+                        <div class="form-group">
+                            <input class="btn-primary btn btn-sm" type="submit" value="Show in main screen">
             </form>
-
+        </div>
+        <div class="">
             <form action="{{ route('manual-test.setRandomAudienceNumber', ['test' => $test->id]) }}" method="post">
                 @csrf
-                <div class="">
-                    <input type="hidden" name="number" value="0">
-                    <input class="btn-danger btn mb-3" type="submit" value="Hide From main screen">
-                </div>
+                <input type="hidden" name="number" value="0">
+                <input class="btn-danger btn mb-3 btn-sm" type="submit" value="Hide From Main Screen">
             </form>
-            <hr>
-            <form id="setQuestionForm" action="{{ route('audience-questions.set') }}" method="post">
-                @csrf
-                <input type="hidden" name="test_id" value="{{ $test->id }}">
-                <button type="submit" class="btn btn-primary">Set Question</button>
-            </form>
-
-            <button class="btn btn-info" id="showAudienceQuestion" data-show="1">Show Question</button>
-            <button class="btn btn-warning" id="hideAudienceQuestion" data-show="0">Hide Question</button>
-
-            <script>
-                document.getElementById('generateRandomAudience').addEventListener('click', function() {
-                    var maxAudiences = document.getElementById('maxAudiences').value;
-                    var randomAudience = Math.floor(Math.random() * maxAudiences) + 1;
-                    document.getElementById('randomAudience').value = randomAudience;
-                });
-            </script>
-        </div>
-
-
-        <div class="col">
-            <h3>Audience Correct Answer</h3>
-            <form id="setAnswerForm" action="{{ route('audiences.store') }}" method="post">
-                @csrf
-                <input type="hidden" name="test_id" value="{{ $test->id }}">
-                <div class="form-group">
-                    <label for="audienceName">Audience Number</label>
-                    <input type="text" name="number" id="audienceName" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="audienceName">Audience Name</label>
-                    <input type="text" name="name" id="audienceName" class="form-control" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" name="email" id="email" class="form-control" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="phone">Phone</label>
-                    <input type="tel" name="phone" id="phone" class="form-control" required>
-                </div>
-
-                <button type="submit" class="btn btn-success">Submit</button>
-            </form>
-            <button class="btn btn-info" id="showAudienceAnswer" data-show="1">Show Answer</button>
-            <button class="btn btn-warning" id="hideAudienceAnswer" data-show="0">Hide Answer</button>
         </div>
     </div>
+    </div>
+
+    <hr>
+    <!-- Set Question Form -->
+    <div class="row">
+
+        <form id="setQuestionForm" action="{{ route('audience-questions.set') }}" method="post">
+            @csrf
+            <input type="hidden" name="test_id" value="{{ $test->id }}">
+            <button type="submit" class="btn btn-primary mb-1">Set Question</button>
+        </form>
+        <button class="btn btn-info" id="showAudienceQuestion" data-show="1">Show Question</button>
+        <button class="btn btn-warning" id="hideAudienceQuestion" data-show="0">Hide Question</button>
+    </div>
+
+    </div>
+
+    <div class="col">
+        <h3>Audience Correct Answer</h3>
+        <!-- Audience Answer Form -->
+        <form id="setAnswerForm" action="{{ route('audiences.store') }}" method="post">
+            @csrf
+            <input type="hidden" name="test_id" value="{{ $test->id }}">
+            <div class="row space-between">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="audienceName">Audience Number</label>
+                        <input type="text" name="number" id="audienceName" class="form-control" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="audienceName">Audience Name</label>
+                        <input type="text" name="name" id="audienceName" class="form-control" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row space-between">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" name="email" id="email" class="form-control" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="tel" name="phone" id="phone" class="form-control" required>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+        <!-- Show/Hide Answer Buttons -->
+        <button class="btn btn-info" id="showAudienceAnswer" data-show="1">Show Answer</button>
+        <button class="btn btn-warning" id="hideAudienceAnswer" data-show="0">Hide Answer</button>
+    </div>
+    </div>
+
 
     <div class="row">
         @include('admin.manual_test_teams_view')
@@ -203,6 +209,21 @@
 
 @section('scripts')
     <script>
+        document.getElementById('generateRandomAudience').addEventListener('click', function() {
+            var maxAudiences = document.getElementById('maxAudiences').value;
+            var randomAudience = Math.floor(Math.random() * maxAudiences) + 1;
+            document.getElementById('randomAudience').value = randomAudience;
+        });
+
+
+        document.getElementById('endTestForm').addEventListener('submit', function(event) {
+            // Display a confirmation dialog before submitting the form
+            if (!confirm('Are you sure you want to end the test?')) {
+                event.preventDefault(); // Prevent form submission if the user cancels
+            }
+        });
+
+
         //update stading
         function updateTestData(testId, loopIndex) {
             $.ajax({
