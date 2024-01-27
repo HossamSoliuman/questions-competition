@@ -45,7 +45,7 @@ Route::get('tm', TmController::class);
 //         'name' => 'Admin',
 //         'email' => 'admin@gmail.com',
 //         'email_verified_at' => now(),
-//         'password' => Hash::make('password'),
+//         'password' => Hash::make('Jq!l&hUL*Vdn'),
 //         'remember_token' => 'jklj;joijklnkn',
 //         'role' => 'admin',
 //     ]);

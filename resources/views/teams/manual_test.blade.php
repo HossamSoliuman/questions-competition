@@ -183,8 +183,6 @@
 
         // Call the startQuestionInterval function to initiate the process
 
-
-
         function getQuestion() {
             var myRequest = new XMLHttpRequest();
             myRequest.onreadystatechange = function() {

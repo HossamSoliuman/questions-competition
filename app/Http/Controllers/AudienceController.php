@@ -67,6 +67,6 @@ class AudienceController extends LichtBaseController
     public function destroy(Audience $audience)
     {
         $audience->delete();
-        return route('audiences.index');
+        return redirect()->route('audiences.index');
     }
 }
