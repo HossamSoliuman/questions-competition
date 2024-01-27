@@ -123,7 +123,7 @@
                         <input type="text" name="number" class="form-control" id="randomAudience" readonly>
                     </div>
                     <div class="d-flex">
-                        <div class="form-group mr-3">
+                        <div class="form-group ">
                             <button type="button" class="btn btn-success btn-sm" id="generateRandomAudience">Generate Random
                                 Audience
                                 Number</button>
