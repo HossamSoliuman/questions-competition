@@ -33,7 +33,16 @@ class ManualTestController extends Controller
         })->unique();
         $team_id = auth()->id();
         $answerSubmitted = 0;
-        return view('admin.current_manual_test', compact('test', 'testQuestions', 'team_id', 'answerSubmitted', 'categories'));
+        $current_time = Carbon::now();
+        $start_time = Carbon::parse($test->start_time);
+
+        if ($current_time >= $start_time) {
+            $test_time_remaining_seconds = $start_time->diffInSeconds($current_time) * -1; // Return negative value
+        } else {
+            $test_time_remaining_seconds = $start_time->diffInSeconds($current_time); // Return positive value
+        }
+
+        return view('admin.current_manual_test', compact('test', 'testQuestions', 'team_id', 'answerSubmitted', 'categories', 'test_time_remaining_seconds'));
     }
 
 
@@ -195,7 +204,16 @@ class ManualTestController extends Controller
         $test->load(['group']);
         $team_id = auth()->id();
         $answerSubmitted = 0;
-        return view('admin.main_screen', compact('test', 'team_id', 'answerSubmitted'));
+        $current_time = Carbon::now();
+        $start_time = Carbon::parse($test->start_time);
+
+        if ($current_time >= $start_time) {
+            $test_time_remaining_seconds = $start_time->diffInSeconds($current_time) * -1; // Return negative value
+        } else {
+            $test_time_remaining_seconds = $start_time->diffInSeconds($current_time); // Return positive value
+        }
+
+        return view('admin.main_screen', compact('test', 'team_id', 'answerSubmitted','test_time_remaining_seconds'));
     }
 
 

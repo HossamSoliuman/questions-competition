@@ -126,3 +126,7 @@ Route::post('manual-test/{test}/send-answer', [ManualTestController::class, 'sen
     ->name('manual-test.sendAnswer');
 
 Route::get('manual-tests/{test}/get-audience-questions', [ManualTestController::class, 'getAudienceQuestions'])->name('manual-tests.getAudienceQuestions');
+
+Route::get('/get-server-time', function () {
+    return response()->json(['server_time' => now()]);
+});

@@ -215,35 +215,36 @@
         document.querySelector('.answer-info').style.display = 'none';
         document.querySelector('.testEnded').style.display = 'none';
 
-
         function updateCountdown() {
-            var startTime = new Date('{{ $test->start_time }}').getTime();
-            var currentTime = new Date().getTime();
-            var timeRemaining = startTime - currentTime;
+            $.ajax({
+                url: '/get-server-time',
+                method: 'GET',
+                success: function(response) {
+                    var serverTime = new Date(response.server_time).getTime();
+                    var testStartTime = new Date('{{ $test->start_time }}').getTime();
+                    var timeRemaining = testStartTime - serverTime;
 
-            if (timeRemaining > 0) {
-                var days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-                var hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                var minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-                var seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+                    if (timeRemaining > 0) {
+                        var days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+                        var hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        var minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                        var seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
 
-                document.getElementById('countdown').innerHTML =
-                    'Time remaining: ' + days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
-                setTimeout(updateCountdown, 1000);
-            } else {
-                document.getElementById('countdown').innerHTML = 'Test has started!';
+                        document.getElementById('countdown').innerHTML =
+                            'Time remaining: ' + days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
+                        setTimeout(updateCountdown, 1000);
+                    } else {
+                        document.getElementById('countdown').innerHTML = 'Test has started!';
+                        var questionStartTime = new Date('{{ $test->question_start_at }}').getTime();
+                        var remainingTime = questionStartTime - serverTime;
+                        var questionRemaining = Math.max(remainingTime, 0);
 
-                var startTime = new Date('{{ $test->question_start_at }}').getTime();
-                var remainingTime = startTime - new Date().getTime();
-                remainingTime = Math.ceil(remainingTime / 1000);
-
-                questionRemaining = Math.max(remainingTime, 0);
-
-                setTimeout(function() {
-                    getQuestion();
-                }, questionRemaining * 1000);
-
-            }
+                        setTimeout(function() {
+                            getQuestion();
+                        }, questionRemaining);
+                    }
+                }
+            });
         }
 
         function updateQuestionTimerDisplay(seconds) {
