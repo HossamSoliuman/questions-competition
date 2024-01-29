@@ -3,10 +3,14 @@
 @section('content')
     <div class="page-header">
         <h1 class="display-4 text-center">Current Test</h1>
+
     </div>
 
     {{-- <section id="current-tests"> --}}
     <div class="container">
+        @if (session('message'))
+                <p class="alert alert-danger text-center">{{ session('message') }}
+        @endif
         <div class="row">
             {{-- group card --}}
             <div class="col">

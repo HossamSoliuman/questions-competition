@@ -18,7 +18,11 @@ use Hossam\Licht\Traits\ApiResponse;
 class ManualTestController extends Controller
 {
     use ApiResponse;
-
+    public $current_server_time;
+    public function __construct()
+    {
+        $this->current_server_time = Carbon::now()->setTimezone('Asia/Bahrain');
+    }
     public function index(Test $test)
     {
         $test->load(['group', 'questions' => function ($query) {
@@ -33,21 +37,33 @@ class ManualTestController extends Controller
         })->unique();
         $team_id = auth()->id();
         $answerSubmitted = 0;
-        $current_time = Carbon::now();
+        $current_time = $this->current_server_time;
         $start_time = Carbon::parse($test->start_time);
 
-        if ($current_time >= $start_time) {
-            $test_time_remaining_seconds = $start_time->diffInSeconds($current_time) * -1; // Return negative value
-        } else {
-            $test_time_remaining_seconds = $start_time->diffInSeconds($current_time); // Return positive value
-        }
-
-        return view('admin.current_manual_test', compact('test', 'testQuestions', 'team_id', 'answerSubmitted', 'categories', 'test_time_remaining_seconds'));
+        return view('admin.current_manual_test', compact('test', 'testQuestions', 'team_id', 'answerSubmitted', 'categories'));
     }
 
 
     public function setQuestion(Request $request)
     {
+        $test = Test::find($request->test_id);
+
+        if ($test->start_time > now()) {
+            $message = 'test did not start yet';
+            return redirect()->route('manual-tests.index', ['test' => $request->test_id])->with('message', $message);
+        };
+
+        $manualTest = $this->setTest($test);
+
+        if ($manualTest->question_start_at) {
+            $currentQuestionEndTime = Carbon::parse($manualTest->question_start_at)
+                ->addSeconds($manualTest->question_time)
+                ->addSeconds($manualTest->answerTime);
+            if ($currentQuestionEndTime > now()) {
+                $message = 'there is a question running now';
+                return redirect()->route('manual-tests.index', ['test' => $request->test_id])->with('message', $message);
+            };
+        }
         $testQuestion = QuestionTest::where('test_id', $request->test_id)
             ->where('set', 0)
             ->whereHas('question.category', function ($query) use ($request) {
@@ -55,16 +71,35 @@ class ManualTestController extends Controller
             })
             ->first();
         $question_id = $testQuestion->question_id;
-        $manualTest = $this->started($request->test_id);
-        $startTime = $this->calculateQuestionStartTime($manualTest->test_id, $manualTest);
+
         $manualTest->update([
             'question_id' => $question_id,
-            'question_start_at' => $startTime,
+            'question_start_at' => now(),
         ]);
         $this->setQuestionAsSet($manualTest->test_id, $question_id);
         return redirect()->route('manual-tests.index', ['test' => $request->test_id]);
     }
 
+
+    public function setTest($test)
+    {
+        if ($test->status != Test::CURRENT) {
+            $test->update([
+                'status' => Test::CURRENT,
+            ]);
+        }
+        $manualTest = ManualTest::where('test_id', $test->id)->first();
+        if ($manualTest) {
+            return $manualTest;
+        }
+        $manualTest = ManualTest::create([
+            'test_id' => $test->id,
+            'group_id' => $test->group_id,
+            'question_time' => $test->question_time,
+            'answer_time' => $test->answer_time,
+        ]);
+        return $manualTest;
+    }
 
     public function setQuestionAsSet($test_id, $question_id)
     {
@@ -79,51 +114,17 @@ class ManualTestController extends Controller
         return;
     }
 
-    public function started($test)
-    {
-        $manualTest = ManualTest::where('test_id', $test)->first();
-        if ($manualTest) {
-            return $manualTest;
-        }
-        $test = Test::find($test);
-        $manualTest = ManualTest::create([
-            'test_id' => $test->id,
-            'group_id' => $test->group_id,
-            'question_time' => $test->question_time,
-            'answer_time' => $test->answer_time,
-        ]);
-        return $manualTest;
-    }
 
-    public function calculateQuestionStartTime($testId, $manualTest)
-    {
-        $test = Test::find($testId);
-        if ($test) {
-            $startTime = max(Carbon::now(), $test->start_time);
-            if ($test->status != Test::CURRENT) {
-                if (Carbon::now() > $test->start_time) {
-                    $test->update([
-                        'status' => Test::CURRENT,
-                    ]);
-                }
-            }
-            if ($manualTest->question_start_at) {
-                $currentQuestionEndTime = Carbon::parse($manualTest->question_start_at)
-                    ->addSeconds($manualTest->question_time)
-                    ->addSeconds($manualTest->answerTime);
-                $startTime = max($startTime, $currentQuestionEndTime);
-            }
-            return $startTime;
-        }
-    }
 
 
     public function endTest(Test $test)
     {
         $manualTest = ManualTest::where('test_id', $test->id)->first();
-        $manualTest->update([
-            'question_id' => null
-        ]);
+        if ($manualTest) {
+            $manualTest->update([
+                'question_id' => null
+            ]);
+        }
         $test->update([
             'status' => Test::PAST,
         ]);
@@ -205,7 +206,7 @@ class ManualTestController extends Controller
         $test->load(['group']);
         $team_id = auth()->id();
         $answerSubmitted = 0;
-        $current_time = Carbon::now();
+        $current_time = $this->current_server_time;
         $start_time = Carbon::parse($test->start_time);
 
         if ($current_time >= $start_time) {
