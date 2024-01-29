@@ -435,7 +435,6 @@
         }
 
         // Call the startQuestionInterval function to initiate the process
-
         function getQuestion() {
             var myRequest = new XMLHttpRequest();
             myRequest.onreadystatechange = function() {
@@ -446,7 +445,7 @@
                         setTimeout(function() {
                             getQuestion();
                         }, 1000)
-                        console.log('equel null');
+                        console.log('equal null');
                         return;
                     }
 
@@ -455,11 +454,12 @@
                         return;
                     }
 
+                    var serverTime = new Date(responseData.data.server_time).getTime(); // Get server time
                     var startTime = new Date(responseData.data.question_start_at).getTime();
                     var endTime = startTime + ({{ $test->question_time }} * 1000);
-                    var remainingTime = endTime - new Date().getTime();
+                    var remainingTime = endTime - serverTime; // Calculate remaining time based on server time
                     remainingTime = Math.ceil(remainingTime / 1000);
-                    questionSecondsRemaining = Math.max(remainingTime, 0)
+                    questionSecondsRemaining = Math.max(remainingTime, 0);
 
                     if (questionSecondsRemaining == 0) {
                         document.querySelector('.test-questions').style.display = 'none';
@@ -478,18 +478,11 @@
                     document.getElementById('label-c').innerHTML = 'c: ' + responseData.data.c;
                     document.getElementById('label-d').innerHTML = 'd: ' + responseData.data.d;
 
-
                     document.querySelector('.test-questions').style.display = 'block';
                     document.querySelector('.answer-info').style.display = 'none';
 
-                    var startTime = new Date(responseData.data.question_start_at).getTime();
-                    var endTime = startTime + ({{ $test->question_time }} * 1000);
-                    var remainingTime = endTime - new Date().getTime();
-                    remainingTime = Math.ceil(remainingTime / 1000);
-
-                    questionSecondsRemaining = Math.max(remainingTime, 0)
                     updateQuestionTimerDisplay(questionSecondsRemaining);
-
+                    clearInterval(questionTimer); // Clear previous timer if exists
 
                     questionTimer = setInterval(function() {
                         updateQuestionTimerDisplay(--questionSecondsRemaining);
@@ -504,10 +497,10 @@
             myRequest.open("GET", "{{ route('manual-test.question', ['test' => $test->id]) }}");
             myRequest.send();
 
-            clearInterval(questionTimer);
-            clearInterval(answerTimer);
+            clearInterval(answerTimer); // Clear answer timer
             answerSubmitted = false;
         }
+
 
         updateCountdown();
 

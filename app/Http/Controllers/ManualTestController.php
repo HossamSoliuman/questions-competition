@@ -142,6 +142,7 @@ class ManualTestController extends Controller
         if ($currentTest) {
             $data['question_start_at'] = $currentTest->question_start_at;
             $data['question_id'] = $currentTest->question_id;
+            $data['server_time'] = Carbon::now()->setTimezone('Asia/Bahrain')->toDateTimeString();
         }
         return $this->successResponse($data);
     }
@@ -213,7 +214,7 @@ class ManualTestController extends Controller
             $test_time_remaining_seconds = $start_time->diffInSeconds($current_time); // Return positive value
         }
 
-        return view('admin.main_screen', compact('test', 'team_id', 'answerSubmitted','test_time_remaining_seconds'));
+        return view('admin.main_screen', compact('test', 'team_id', 'answerSubmitted', 'test_time_remaining_seconds'));
     }
 
 
