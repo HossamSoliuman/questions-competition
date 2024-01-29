@@ -19,10 +19,13 @@ use App\Http\Controllers\TableController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TmController;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\Finder\Iterator\FilecontentFilterIterator;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -127,6 +130,7 @@ Route::post('manual-test/{test}/send-answer', [ManualTestController::class, 'sen
 
 Route::get('manual-tests/{test}/get-audience-questions', [ManualTestController::class, 'getAudienceQuestions'])->name('manual-tests.getAudienceQuestions');
 
+
 Route::get('/get-server-time', function () {
-    return response()->json(['server_time' => now()]);
+    return response()->json(['server_time' => Carbon::now()->setTimezone('Asia/Bahrain')->toDateTimeString()]);
 });

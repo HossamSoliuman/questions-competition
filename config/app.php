@@ -69,8 +69,8 @@ return [
     |
     */
 
-    'timezone' => 'Africa/Cairo',
-    // 'timezone' => 'Asia/Bahrain',
+    // 'timezone' => 'Africa/Cairo',
+    'timezone' => 'Asia/Bahrain',
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration

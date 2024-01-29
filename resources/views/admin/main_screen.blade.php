@@ -220,7 +220,7 @@
                 url: '/get-server-time',
                 method: 'GET',
                 success: function(response) {
-                    var serverTime = new Date(response.server_time).getTime();
+                    var serverTime = new Date(response.server_time).getTime(); // Parse server time
                     var testStartTime = new Date('{{ $test->start_time }}').getTime();
                     var timeRemaining = testStartTime - serverTime;
 
@@ -246,6 +246,8 @@
                 }
             });
         }
+
+
 
         function updateQuestionTimerDisplay(seconds) {
             document.getElementById('question-timer').innerHTML = seconds;
