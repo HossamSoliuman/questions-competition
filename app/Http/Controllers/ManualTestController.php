@@ -181,6 +181,7 @@ class ManualTestController extends Controller
         session(['lastAnswer' => $request->question_id]);
         $question = Question::find($request->question_id);
         $correctAnswer = $question->correct_answer;
+        $correctAnswer = strtolower($correctAnswer);
         $isCorrect = $correctAnswer == $request->answer ? 1 : 0;
         if ($isCorrect) {
             $TestQuestion = QuestionTest::where('Test_id', $test->id)->where('question_id', $request->question_id)->first();

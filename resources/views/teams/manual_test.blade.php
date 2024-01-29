@@ -23,7 +23,6 @@
                     <div class="timer" id="question-timer">25</div>
                 </div>
                 <form id="testForm" action="{{ route('manual-test.sendAnswer', ['test' => $test->id]) }}" method="post">
-
                     @csrf
                     <h3 class="question" id="question">Question</h3>
                     <div class="answers-container">
@@ -202,7 +201,7 @@
                     }
 
                     if (responseData.data.question_id === null) {
-                        document.querySelector('.testEnded').style.display = 'block';
+                        window.location.href = "{{ route('handle-teams.index') }}";
                         return;
                     }
 
@@ -229,6 +228,8 @@
                     document.getElementById('label-b').innerHTML = 'b: ' + responseData.data.b;
                     document.getElementById('label-c').innerHTML = 'c: ' + responseData.data.c;
                     document.getElementById('label-d').innerHTML = 'd: ' + responseData.data.d;
+
+                    enableFormInputs()
 
                     document.querySelector('.test-questions').style.display = 'block';
                     document.querySelector('.answer-info').style.display = 'none';
@@ -281,8 +282,6 @@
             xhr.open('POST', this.action);
             xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}'); // Add CSRF token header
             xhr.send(formData);
-
-            // Disable form inputs
             disableFormInputs();
         });
 
