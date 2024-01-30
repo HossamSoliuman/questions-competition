@@ -89,48 +89,49 @@ Route::middleware(['auth', 'admin'])->group(function () {
 });
 
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'single.device'])->group(function () {
     Route::get('handle-teams', [HandleTeamsController::class, 'index'])->name('handle-teams.index');
     Route::get('team-test/{test}/view', [HandleTeamsController::class, 'viewTest'])->name('tests.view');
-});
-Route::get('view', [HandleTeamsController::class, 'show']);
 
-Route::get('current-test/{test}/question', [CurrentTestController::class, 'getQuestion'])
-    ->name('current-test.question');
+    Route::get('view', [HandleTeamsController::class, 'show']);
 
-Route::get('current-test/{question}/{test}/answer', [CurrentTestController::class, 'correctAnswer'])
-    ->name('current-test.answer');
+    Route::get('current-test/{test}/question', [CurrentTestController::class, 'getQuestion'])
+        ->name('current-test.question');
 
-//////////////////
-Route::post('current-test/{test}/send-answer', [CurrentTestController::class, 'sendAnswer'])
-    ->name('current-test.sendAnswer');
+    Route::get('current-test/{question}/{test}/answer', [CurrentTestController::class, 'correctAnswer'])
+        ->name('current-test.answer');
 
-Route::get('groups/{group}/standing', [GroupController::class, 'standing'])->name('groups.standing');
+    //////////////////
+    Route::post('current-test/{test}/send-answer', [CurrentTestController::class, 'sendAnswer'])
+        ->name('current-test.sendAnswer');
 
-
-Route::get('/admin/{testId}/update-tests-data', [AdminController::class, 'updateTestsData']);
-
-// manual test
-
-Route::get('manual-test/{test}/question', [ManualTestController::class, 'getQuestion'])
-    ->name('manual-test.question');
-
-Route::get('manual-test/{test}/end-test', [ManualTestController::class, 'endTest'])
-    ->name('manual-test.endTest');
-
-Route::get('manual-test/{question}/{test}/answer', [ManualTestController::class, 'correctAnswer'])
-    ->name('manual-test.answer');
-
-Route::post('manual-test/{test}/setRandomAudienceNumber', [ManualTestController::class, 'setRandomAudienceNumber'])
-    ->name('manual-test.setRandomAudienceNumber');
-
-//////////////////
-Route::post('manual-test/{test}/send-answer', [ManualTestController::class, 'sendAnswer'])
-    ->name('manual-test.sendAnswer');
-
-Route::get('manual-tests/{test}/get-audience-questions', [ManualTestController::class, 'getAudienceQuestions'])->name('manual-tests.getAudienceQuestions');
+    Route::get('groups/{group}/standing', [GroupController::class, 'standing'])->name('groups.standing');
 
 
-Route::get('/get-server-time', function () {
-    return response()->json(['server_time' => Carbon::now()->setTimezone('Asia/Bahrain')->toDateTimeString()]);
+    Route::get('/admin/{testId}/update-tests-data', [AdminController::class, 'updateTestsData']);
+
+    // manual test
+
+    Route::get('manual-test/{test}/question', [ManualTestController::class, 'getQuestion'])
+        ->name('manual-test.question');
+
+    Route::get('manual-test/{test}/end-test', [ManualTestController::class, 'endTest'])
+        ->name('manual-test.endTest');
+
+    Route::get('manual-test/{question}/{test}/answer', [ManualTestController::class, 'correctAnswer'])
+        ->name('manual-test.answer');
+
+    Route::post('manual-test/{test}/setRandomAudienceNumber', [ManualTestController::class, 'setRandomAudienceNumber'])
+        ->name('manual-test.setRandomAudienceNumber');
+
+    //////////////////
+    Route::post('manual-test/{test}/send-answer', [ManualTestController::class, 'sendAnswer'])
+        ->name('manual-test.sendAnswer');
+
+    Route::get('manual-tests/{test}/get-audience-questions', [ManualTestController::class, 'getAudienceQuestions'])->name('manual-tests.getAudienceQuestions');
+
+
+    Route::get('/get-server-time', function () {
+        return response()->json(['server_time' => Carbon::now()->setTimezone('Asia/Bahrain')->toDateTimeString()]);
+    });
 });
