@@ -13,7 +13,7 @@ use App\Models\Test;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Hossam\Licht\Traits\ApiResponse;
-
+use Nette\Utils\Random;
 
 class ManualTestController extends Controller
 {
@@ -231,9 +231,11 @@ class ManualTestController extends Controller
     }
     public function setRandomAudienceNumber(Request $request, $test)
     {
-        $number = $request->number;
-        if (!$number) {
+
+        if (isset($request->hide)) {
             $number = 0;
+        } else {
+            $number = random_int(1, $request->max_audiences);
         }
         $audienceQuestion = new CurrentAudienceQuestionController;
         $audienceQuestion = $audienceQuestion->testExist($test);

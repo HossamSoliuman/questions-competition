@@ -119,28 +119,25 @@
                 <div class="row">
                     <div class="form-group mr-3">
                         <label for="maxAudiences">Max Audiences:</label>
-                        <input type="number" class="form-control" id="maxAudiences" name="maxAudiences"
+                        <input type="number" class="form-control" id="maxAudiences" name="max_audiences"
                             placeholder="Enter max audiences" required>
                     </div>
-                    <div class="form-group">
-                        <label for="randomAudience">Random Audience Number:</label>
-                        <input type="text" name="number" class="form-control" id="randomAudience" readonly>
-                    </div>
+
                     <div class="d-flex">
                         <div class="form-group ">
-                            <button type="button" class="btn btn-success btn-sm" id="generateRandomAudience">Generate
+                            <button type="submit" class="btn btn-success btn-sm" >Generate
                                 Random
                                 Audience
                                 Number</button>
                         </div>
                         <div class="form-group">
-                            <input class="btn-primary btn btn-sm" type="submit" value="Show in main screen">
+
             </form>
         </div>
         <div class="">
             <form action="{{ route('manual-test.setRandomAudienceNumber', ['test' => $test->id]) }}" method="post">
                 @csrf
-                <input type="hidden" name="number" value="0">
+                <input type="hidden" name="hide" value="1">
                 <input class="btn-danger btn mb-3 btn-sm" type="submit" value="Hide From Main Screen">
             </form>
         </div>
@@ -214,12 +211,6 @@
 
 @section('scripts')
     <script>
-        document.getElementById('generateRandomAudience').addEventListener('click', function() {
-            var maxAudiences = document.getElementById('maxAudiences').value;
-            var randomAudience = Math.floor(Math.random() * maxAudiences) + 1;
-            document.getElementById('randomAudience').value = randomAudience;
-        });
-
 
         document.getElementById('endTestForm').addEventListener('submit', function(event) {
             if (!confirm('Are you sure you want to end the test?')) {
