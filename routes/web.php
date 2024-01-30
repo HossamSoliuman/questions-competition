@@ -130,8 +130,8 @@ Route::middleware(['auth', 'single.device'])->group(function () {
 
     Route::get('manual-tests/{test}/get-audience-questions', [ManualTestController::class, 'getAudienceQuestions'])->name('manual-tests.getAudienceQuestions');
 
+});
 
     Route::get('/get-server-time', function () {
         return response()->json(['server_time' => Carbon::now()->setTimezone('Asia/Bahrain')->toDateTimeString()]);
     });
-});

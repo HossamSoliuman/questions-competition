@@ -37,14 +37,8 @@ class HandleTeamsController extends Controller
         $team_id = auth()->id();
         $team_name = auth()->user()->name;
 
-        $current_time = Carbon::now();
         $start_time = Carbon::parse($test->start_time);
 
-        if ($current_time >= $start_time) {
-            $test_time_remaining_seconds = $start_time->diffInSeconds($current_time) * -1; // Return negative value
-        } else {
-            $test_time_remaining_seconds = $start_time->diffInSeconds($current_time); // Return positive value
-        }
-        return view('teams.manual_test', compact('test', 'answerSubmitted', 'team_id','team_name','test_time_remaining_seconds'));
+        return view('teams.manual_test', compact('test', 'answerSubmitted', 'team_id','team_name'));
     }
 }

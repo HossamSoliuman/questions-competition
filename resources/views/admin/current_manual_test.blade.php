@@ -9,7 +9,7 @@
     {{-- <section id="current-tests"> --}}
     <div class="container">
         @if (session('message'))
-                <p class="alert alert-danger text-center">{{ session('message') }}
+            <p class="alert alert-danger text-center">{{ session('message') }}
         @endif
         <div class="row">
             {{-- group card --}}
@@ -125,7 +125,7 @@
 
                     <div class="d-flex">
                         <div class="form-group ">
-                            <button type="submit" class="btn btn-success btn-sm" >Generate
+                            <button type="submit" class="btn btn-success btn-sm">Generate
                                 Random
                                 Audience
                                 Number</button>
@@ -211,7 +211,6 @@
 
 @section('scripts')
     <script>
-
         document.getElementById('endTestForm').addEventListener('submit', function(event) {
             if (!confirm('Are you sure you want to end the test?')) {
                 event.preventDefault();
@@ -480,11 +479,27 @@
                     clearInterval(questionTimer); // Clear previous timer if exists
 
                     questionTimer = setInterval(function() {
-                        updateQuestionTimerDisplay(--questionSecondsRemaining);
-                        if (questionSecondsRemaining <= 0) {
-                            clearInterval(questionTimer);
-                            correctAnswer(questionId);
-                        }
+                        $.ajax({
+                            url: '/get-server-time',
+                            method: 'GET',
+                            success: function(response) {
+                                var serverTime = new Date(response.server_time).getTime();
+
+                                var startTime = new Date(responseData.data.question_start_at)
+                                    .getTime();
+                                var endTime = startTime + ({{ $test->question_time }} * 1000);
+                                var remainingTime = endTime -
+                                    serverTime;
+                                remainingTime = Math.ceil(remainingTime / 1000);
+                                questionSecondsRemaining = Math.max(remainingTime, 0);
+                                document.getElementById('question-timer').innerHTML =
+                                    questionSecondsRemaining;
+                                if (questionSecondsRemaining <= 0) {
+                                    clearInterval(questionTimer);
+                                    correctAnswer(questionId);
+                                }
+                            }
+                        });
                     }, 1000);
                 }
             };

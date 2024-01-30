@@ -363,11 +363,27 @@
                     clearInterval(questionTimer); // Clear previous timer if exists
 
                     questionTimer = setInterval(function() {
-                        updateQuestionTimerDisplay(--questionSecondsRemaining);
-                        if (questionSecondsRemaining <= 0) {
-                            clearInterval(questionTimer);
-                            correctAnswer(questionId);
-                        }
+                        $.ajax({
+                            url: '/get-server-time',
+                            method: 'GET',
+                            success: function(response) {
+                                var serverTime = new Date(response.server_time).getTime();
+
+                                var startTime = new Date(responseData.data.question_start_at)
+                                    .getTime();
+                                var endTime = startTime + ({{ $test->question_time }} * 1000);
+                                var remainingTime = endTime -
+                                    serverTime;
+                                remainingTime = Math.ceil(remainingTime / 1000);
+                                questionSecondsRemaining = Math.max(remainingTime, 0);
+                                document.getElementById('question-timer').innerHTML =
+                                    questionSecondsRemaining;
+                                if (questionSecondsRemaining <= 0) {
+                                    clearInterval(questionTimer);
+                                    correctAnswer(questionId);
+                                }
+                            }
+                        });
                     }, 1000);
                 }
             };
