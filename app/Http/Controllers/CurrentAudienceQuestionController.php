@@ -17,6 +17,7 @@ class CurrentAudienceQuestionController extends Controller
         $question_id = $this->getRandomQuestionId($request->test_id);
         $currrentQuestion->update([
             'question_id' => $question_id,
+            'show_question' => 1,
         ]);
         return redirect()->route('manual-tests.index', ['test' => $request->test_id]);
     }
@@ -25,9 +26,16 @@ class CurrentAudienceQuestionController extends Controller
     public function showQuestion($testId, $show)
     {
         $testQuestion = CurrentAudienceQuestion::where('test_id', $testId)->first();
-        $testQuestion->update([
-            'show_question' => $show,
-        ]);
+        if ($show == 0) {
+            $testQuestion->update([
+                'show_question' => $show,
+                'random_number' => 0,
+            ]);
+        } else {
+            $testQuestion->update([
+                'show_question' => $show,
+            ]);
+        }
         return response()->json(['message' => 'Success']);
     }
 
