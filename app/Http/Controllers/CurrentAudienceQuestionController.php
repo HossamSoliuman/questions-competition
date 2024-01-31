@@ -29,6 +29,7 @@ class CurrentAudienceQuestionController extends Controller
         if ($show == 0) {
             $testQuestion->update([
                 'show_question' => $show,
+                'show_answer' => 0,
                 'random_number' => 0,
             ]);
         } else {

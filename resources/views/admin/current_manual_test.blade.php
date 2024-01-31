@@ -83,29 +83,25 @@
                                 </div>
                             @endif
                         </div>
-                        <div class="row">
-                            @if ($categories->isNotEmpty())
-                                <div class="col-md-5">
-                                    <div class="form-group">
-                                        <button class="btn btn-primary btn-block text-md" type="submit">Set</button>
-                                    </div>
-                                </div>
-                            @endif
+
+                        @if ($categories->isNotEmpty())
+                            <div class="row">
+                                <div class="form-group w-100">
+                                    <button class="btn btn-primary btn-block text-md" type="submit">Set</button>
+                        @endif
 
                     </form>
                     <form id="endTestForm" action="{{ route('manual-test.endTest', ['test' => $test->id]) }}"
                         method="get">
-                        <div class="col">
-                            <div class="form-group">
-                                <button class="btn btn-danger btn-block text-md" type="submit">End Test</button>
-                            </div>
 
-                        </div>
-                    </form>
-
+                        <button class="btn btn-danger btn-block text-md" type="submit">End Test</button>
                 </div>
             </div>
+            </form>
+
         </div>
+    </div>
+    </div>
     </div>
     {{-- audience section  --}}
     <hr>
@@ -153,8 +149,10 @@
             <input type="hidden" name="test_id" value="{{ $test->id }}">
             <button type="submit" class="btn btn-primary mb-1">Set Question</button>
         </form>
-        <button class="btn btn-info" id="showAudienceQuestion" data-show="1">Show Question</button>
-        <button class="btn btn-warning" id="hideAudienceQuestion" data-show="0">Hide Question</button>
+        {{-- <button class="btn btn-info" id="showAudienceQuestion" data-show="1">Show Question</button> --}}
+        <button class="btn btn-info" id="showAudienceAnswer" data-show="1">Show Answer</button>
+
+        <button class="btn btn-warning" id="hideAudienceQuestion" data-show="0">Hide The question</button>
     </div>
 
     </div>
@@ -196,8 +194,7 @@
             <button type="submit" class="btn btn-success">Submit</button>
         </form>
         <!-- Show/Hide Answer Buttons -->
-        <button class="btn btn-info" id="showAudienceAnswer" data-show="1">Show Answer</button>
-        <button class="btn btn-warning" id="hideAudienceAnswer" data-show="0">Hide Answer</button>
+        {{-- <button class="btn btn-warning" id="hideAudienceAnswer" data-show="0">Hide Answer</button> --}}
     </div>
     </div>
 
