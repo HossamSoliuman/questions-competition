@@ -48,6 +48,12 @@
             </a>
         </li>
 
+        <li class="nav-item">
+            <a class="nav-link btn btn-secondary btn-block mb-2" href="{{ route('import.questions.view') }}">
+                Import Questions
+            </a>
+        </li>
+
 
         <li class="nav-item">
 

@@ -12,6 +12,7 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\HandleTeamsController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ImportQuestionsController;
 use App\Http\Controllers\ManualTestController;
 use App\Http\Controllers\MatchController;
 use App\Http\Controllers\QuestionController;
@@ -86,6 +87,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('current-audience-questions/set', [CurrentAudienceQuestionController::class, 'set'])->name('audience-questions.set');
     Route::get('current-audience-questions/{test_id}/{show}/show-question', [CurrentAudienceQuestionController::class, 'showQuestion'])->name('audience-questions.show-question');
     Route::get('current-audience-answers/{test_id}/{show}/show-answer', [CurrentAudienceQuestionController::class, 'showAnswer'])->name('audience-questions.show-answer');
+    Route::get('/import-questions', [ImportQuestionsController::class, 'showUploadForm'])->name('import.questions.view');
+    Route::post('/import-questions', [ImportQuestionsController::class, 'import'])->name('import.questions');
 });
 
 
@@ -129,9 +132,8 @@ Route::middleware(['auth', 'single.device'])->group(function () {
         ->name('manual-test.sendAnswer');
 
     Route::get('manual-tests/{test}/get-audience-questions', [ManualTestController::class, 'getAudienceQuestions'])->name('manual-tests.getAudienceQuestions');
-
 });
 
-    Route::get('/get-server-time', function () {
-        return response()->json(['server_time' => Carbon::now()->setTimezone('Asia/Bahrain')->toDateTimeString()]);
-    });
+Route::get('/get-server-time', function () {
+    return response()->json(['server_time' => Carbon::now()->setTimezone('Asia/Bahrain')->toDateTimeString()]);
+});
