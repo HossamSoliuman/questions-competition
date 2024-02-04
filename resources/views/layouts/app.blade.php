@@ -31,6 +31,13 @@
             box-sizing: content-box;
         }
     </style>
+     <style>
+        .badge {
+            font-size: 20px;
+            /* Adjust the font size as needed */
+        }
+    </style>
+
     @yield('style')
 </head>
 
