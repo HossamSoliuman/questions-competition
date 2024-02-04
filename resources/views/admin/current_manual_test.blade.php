@@ -1,5 +1,4 @@
 @extends('layouts.admin')
-
 @section('content')
     <div class="page-header">
         <h1 class="display-4 text-center">Current Test</h1>
@@ -7,102 +6,84 @@
     </div>
 
     {{-- <section id="current-tests"> --}}
-    <div class="container">
-        @if (session('message'))
-            <p class="alert alert-danger text-center">{{ session('message') }}
-        @endif
-        <div class="row">
-            {{-- group card --}}
-            <div class="col">
-                <h2 class="section-title">Current Test Group Standing</h2>
-                <div class="card test-card mb-5" id="test-{{ $test->id }}-1">
-                    <div class="card-header">
-                        <h3 class="test-title">{{ $test->name }}</h3>
-                    </div>
-                    <div class="card-body">
-                        <p class="test-start" id="start-time-{{ $test->id }}">Starts:
-                            {{ $test->start_time }}</p>
-                        <ul class="list-group team-list">
-                            @foreach ($test->group->teams->sortByDesc('pivot.points') as $team)
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span class="badge badge-primary badge-pill">{{ $loop->iteration }}</span>
-                                    <span class="team-name">{{ $team->name }}</span>
-                                    <span class="badge badge-success badge-pill">{{ $team->pivot->points }}</span>
-                                </li>
-                                <hr class="my-1">
-                            @endforeach
-                        </ul>
+        <div class="container">
+            @if (session('message'))
+                <p class="alert alert-danger text-center">{{ session('message') }}</p>
+            @endif
+            <div class="row">
+                {{-- group card --}}
+                <div class="col">
+                    <h2 class="section-title">Current Test Group Standing</h2>
+                    <div class="card test-card mb-5" id="test-{{ $test->id }}-1">
+                        <div class="card-header">
+                            <h3 class="test-title">{{ $test->name }}</h3>
+                        </div>
+                        <div class="card-body">
+                            <p class="test-start" id="start-time-{{ $test->id }}">Starts: {{ $test->start_time }}</p>
+                            <ul class="list-group team-list">
+                                @foreach ($test->group->teams->sortByDesc('pivot.points') as $team)
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span class="badge badge-primary badge-pill">{{ $loop->iteration }}</span>
+                                        <span class="team-name">{{ $team->name }}</span>
+                                        <span class="badge badge-success badge-pill">{{ $team->pivot->points }}</span>
+                                    </li>
+                                    <hr class="my-1">
+                                @endforeach
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
-            {{-- end group card --}}
-
-            <style>
-                .category-card label {
-                    white-space: nowrap;
-                    font-size: xx-small;
-                    padding: 0%;
-                    max-width: 100%;
-                }
-
-                .category-card {
-                    border: none;
-                    /* Remove card border */
-                }
-
-                .category-card .card-body {
-                    padding: 0;
-                    /* Remove padding from card body */
-                }
-            </style>
-
-            <div class="col">
-                <h2 class="section-title">Current Test Group Questions</h2>
-                <div class="card-body">
-                    <form action="{{ route('manual-tests.setQuestion') }}" method="post">
-                        @csrf
-                        <div class="row">
-                            @if ($categories->isNotEmpty())
-                                @foreach ($categories as $category)
-                                    <div class="col-md-4">
-                                        <div class="card mb-3 category-card">
-                                            <div class="card-body text-center p-0">
-                                                <input type="hidden" name="test_id" value="{{ $test->id }}">
-                                                <input required type="radio" name="category_id"
-                                                    value="{{ $category['id'] }}" id="category_{{ $category['id'] }}"
-                                                    class="category-radio visually-hidden">
-                                                <label for="category_{{ $category['id'] }}"
-                                                    class="btn btn-outline-primary btn-block text-sm">{{ $category['name'] }}</label>
+                {{-- end group card --}}
+                <div class="col">
+                    <h2 class="section-title">Current Test Group Questions</h2>
+                    <div class="card-body">
+                        <form action="{{ route('manual-tests.setQuestion') }}" method="post">
+                            @csrf
+                            <div class="row">
+                                @if ($categories->isNotEmpty())
+                                    @foreach ($categories as $category)
+                                        <div class="col-md-4">
+                                            <div class="card mb-3 category-card">
+                                                <div class="card-body text-center p-0">
+                                                    <input type="hidden" name="test_id" value="{{ $test->id }}">
+                                                    <input required type="radio" name="category_id"
+                                                           value="{{ $category['id'] }}"
+                                                           id="category_{{ $category['id'] }}"
+                                                           class="category-radio visually-hidden">
+                                                    <label for="category_{{ $category['id'] }}"
+                                                           class="btn btn-outline-primary btn-block text-sm">{{ $category['name'] }}</label>
+                                                </div>
                                             </div>
                                         </div>
+                                    @endforeach
+                                @else
+                                    <div class="col">
+                                        <p>No more questions</p>
                                     </div>
-                                @endforeach
-                            @else
-                                <div class="col">
-                                    <p>No more questions</p>
-                                </div>
-                            @endif
-                        </div>
-
-                        @if ($categories->isNotEmpty())
+                                @endif
+                            </div>
                             <div class="row">
-                                <div class="form-group w-100">
-                                    <button class="btn btn-primary btn-block text-md" type="submit">Set</button>
-                        @endif
-
-                    </form>
-                    <form id="endTestForm" action="{{ route('manual-test.endTest', ['test' => $test->id]) }}"
-                        method="get">
-
-                        <button class="btn btn-danger btn-block text-md" type="submit">End Test</button>
+                                @if ($categories->isNotEmpty())
+                                    <div class="col mb-2">
+                                        <button class="btn btn-primary btn-block text-md" type="submit">Set</button>
+                                    </div>
+                                @endif
+                            </div>
+                        </form>
+                        <div class="row">
+                            <div class="col">
+                                <form id="endTestForm"
+                                      action="{{ route('manual-test.endTest', ['test' => $test->id]) }}"
+                                      method="get">
+                                    <button class="btn btn-danger btn-block text-md" type="submit">End Test</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            </form>
-
         </div>
-    </div>
-    </div>
-    </div>
+
     {{-- audience section  --}}
     <hr>
     <div class="row">
@@ -205,7 +186,6 @@
     </div>
 
 @endsection
-
 @section('scripts')
     <script>
         document.getElementById('endTestForm').addEventListener('submit', function(event) {
