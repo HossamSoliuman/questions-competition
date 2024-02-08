@@ -1,22 +1,23 @@
 @extends('layouts.app')
 @section('content')
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-    }
-    .background-image-container {
-        background-image: url('{{ asset('logo.png') }}');
-        background-size: contain;
-        background-position: center;
-        background-repeat: no-repeat;
-        opacity: 0.5;
-        height: 100vh;
-        position: fixed;
-        width: 100%;
-        z-index: -1;
-    }
-</style>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .background-image-container {
+            background-image: url('{{ asset('logo.png') }}');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.5;
+            height: 100vh;
+            position: fixed;
+            width: 100%;
+            z-index: 4;
+        }
+    </style>
 
     <div class="background-image-container"></div>
 
@@ -86,16 +87,17 @@
                     <div class="col mr-3">
                         <div class="card test-card mb-5" id="test-{{ $test->id }}-1">
                             <div class="card-header">
-                                <h3 class="test-title">{{ $test->name }}</h3>
+                                <h3 class="test-title text-center">{{ $test->name }}</h3>
                             </div>
                             <div class="card-body">
-                                <p class="test-start" id="start-time-{{ $test->id }}">البداية: {{ $test->start_time }}
+                                <p class="test-start" id="start-time-{{ $test->id }}">Starts: {{ $test->start_time }}
                                 </p>
                                 <ul class="list-group team-list">
                                     @foreach ($test->group->teams->sortByDesc('pivot.points') as $team)
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
                                             <span class="badge badge-primary badge-pill">{{ $loop->iteration }}</span>
-                                            <span class="team-name">{{ $team->name }}</span>
+                                            <span class="team-name"
+                                                style="font-size: larger; font-weight: bold;">{{ $team->name }}</span>
                                             <span class="badge badge-success badge-pill">{{ $team->pivot->points }}</span>
                                         </li>
                                         <hr class="my-1">
@@ -108,7 +110,6 @@
                         @include('admin.main_screen_teams_view')
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -140,7 +141,8 @@
                                     '<li class="list-group-item d-flex justify-content-between align-items-center">' +
                                     '<span class="badge badge-primary badge-pill">' + (index +
                                         1) + '</span>' +
-                                    '<span class="team-name">' + team.name + '</span>' +
+                                    '<span style="font-size: larger; font-weight: bold;" class="team-name">' +
+                                    team.name + '</span>' +
                                     '<span class="badge badge-success badge-pill">' + team.pivot
                                     .points + '</span>' +
                                     '</li>' +

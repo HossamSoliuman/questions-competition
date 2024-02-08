@@ -24,6 +24,7 @@
                 </div>
                 <form id="testForm" action="{{ route('manual-test.sendAnswer', ['test' => $test->id]) }}" method="post">
                     @csrf
+                    <h3 class="question text-center" id="category">Category</h3>
                     <h3 class="question" id="question">Question</h3>
                     <div class="answers-container">
                         <input type="hidden" name="question_id" id="question_id" value="">
@@ -219,6 +220,7 @@
                     }
                     var questionId = responseData.data.id;
                     var show_answers_delay = responseData.data.show_answers_delay;
+                    document.getElementById('category').innerHTML = responseData.data.category.name;
                     document.getElementById('question').innerHTML = responseData.data.name;
                     document.getElementById('question_id').value = responseData.data.question_id;
                     document.querySelector('.answers-container').style.display = 'none';
