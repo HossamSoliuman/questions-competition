@@ -14,7 +14,7 @@
         height: 100vh;
         position: fixed;
         width: 100%;
-        z-index: -1; /* Ensure the background image stays behind the content */
+        z-index: -1;
     }
 </style>
 
