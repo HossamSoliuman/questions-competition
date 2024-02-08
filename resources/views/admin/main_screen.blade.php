@@ -1,36 +1,59 @@
 @extends('layouts.app')
 @section('content')
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    .background-image-container {
+        background-image: url('{{ asset('logo.png') }}');
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 0.5;
+        height: 100vh;
+        position: fixed;
+        width: 100%;
+        z-index: -1; /* Ensure the background image stays behind the content */
+    }
+</style>
+
+    <div class="background-image-container"></div>
+
+
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="page-header">
-                <h1 class="display-4 text-center">Current Test: {{ $test->name }}</h1>
+                <h1 class="display-4 text-center">{{ $test->group->competition->name }}</h1>
+                <p class="text-center">وقت السؤال {{ $test->question_time }} ثانية</p>
+                <p class="text-center">وقت الإجابة {{ $test->answer_time }} ثانية</p>
+                <p class="text-center">
+                    <a href="{{ route('admin.index') }}">الخروج من الشاشة الرئيسية</a>
+                </p>
             </div>
             <div class="container">
-                <a href="{{ route('admin.index') }}">Exit Main Screen</a>
                 <div class="row">
                     <div class="col">
                         <div class="row justify-content-center">
-                            <div id="randomNumberBox" class="col-md-6 bg-info text-white p-3 rounded shadow mb-4">
-                                <p class="mb-0">Random Number: <span style="font-size: 2em;" class="font-weight-bold"
+                            <div id="randomNumberBox"
+                                class="col-md-6 bg-info text-white p-3 rounded shadow mb-4 text-right">
+                                <p class="mb-0" style="font-size: 2em;">رقم عشوائي: <span class="font-weight-bold"
                                         id="randomNumber"></span></p>
                             </div>
-
-                            <div class="col-md-12">
+                            <div class="col-md-12 text-right">
                                 <div id="audiences-question-container" class="bg-light p-4 rounded shadow mb-4 ">
-                                    <h2 class="section-title text-center">Audience Questions</h2>
+                                    <h2 class="section-title text-center" style="font-size: 1.5em;">أسئلة الجمهور</h2>
                                     <h3 id="audienceQuestion" class="text-primary mb-4"></h3>
 
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <div class="bg-white p-3 rounded shadow">
-                                                <label for="a" class="option-label font-weight-bold">A:</label>
-                                                <span id="a" class="form-control-plaintext option-text"></span>
+                                                <span id="b" style="font-size: 1.2em;"></span> :B
                                             </div>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <div class="bg-white p-3 rounded shadow">
-                                                <label for="b" class="option-label font-weight-bold">B:</label>
-                                                <span id="b" class="form-control-plaintext option-text"></span>
+                                                <span id="a" style="font-size: 1.2em;"></span> :A
                                             </div>
                                         </div>
                                     </div>
@@ -38,38 +61,36 @@
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <div class="bg-white p-3 rounded shadow">
-                                                <label for="c" class="option-label font-weight-bold">C:</label>
-                                                <span id="c" class="form-control-plaintext option-text"></span>
+                                                <span id="d" style="font-size: 1.2em;"></span> :D
                                             </div>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <div class="bg-white p-3 rounded shadow">
-                                                <label for="d" class="option-label font-weight-bold">D:</label>
-                                                <span id="d" class="form-control-plaintext option-text"></span>
+                                                <span id="c" style="font-size: 1.2em;"></span> :C
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div id="audiences-answer-container" class="bg-light p-4 rounded shadow mb-4 ">
-                                    <p class="mb-0">Correct Answer is: <span id="audience-correct-answer"
-                                            class="font-weight-bold text-success"></span></p>
+                                    <p style="font-size: 2.2em;" class="mb-0"><span id="audience-correct-answer"
+                                            class="font-weight-bold text-success"></span> : الإجابة الصحيحة هي</p>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col">
-                        <h2 class="section-title text-center">Current Test Group Standing</h2>
+                    <div class="col mr-3">
                         <div class="card test-card mb-5" id="test-{{ $test->id }}-1">
                             <div class="card-header">
                                 <h3 class="test-title">{{ $test->name }}</h3>
                             </div>
                             <div class="card-body">
-                                <p class="test-start" id="start-time-{{ $test->id }}">Starts:
-                                    {{ $test->start_time }}</p>
+                                <p class="test-start" id="start-time-{{ $test->id }}">البداية: {{ $test->start_time }}
+                                </p>
                                 <ul class="list-group team-list">
                                     @foreach ($test->group->teams->sortByDesc('pivot.points') as $team)
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -83,13 +104,13 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col">
+                        @include('admin.main_screen_teams_view')
+                    </div>
                 </div>
 
             </div>
         </div>
-    </div>
-    <div class="row">
-        @include('admin.manual_test_teams_view')
     </div>
 @endsection
 @section('scripts')
@@ -234,7 +255,7 @@
                             'Time remaining: ' + days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
                         setTimeout(updateCountdown, 1000);
                     } else {
-                        document.getElementById('countdown').innerHTML = 'Test has started!';
+                        // document.getElementById('countdown').innerHTML = 'Test has started!';
                         var questionStartTime = new Date('{{ $test->question_start_at }}').getTime();
                         var remainingTime = questionStartTime - serverTime;
                         var questionRemaining = Math.max(remainingTime, 0);
@@ -349,8 +370,13 @@
                     }
 
                     var questionId = responseData.data.id;
+                    var show_answers_delay = responseData.data.show_answers_delay;
+                    console.log(responseData.data.category);
+                    document.getElementById('category').innerHTML = responseData.data.category.name;
                     document.getElementById('question').innerHTML = responseData.data.name;
                     document.getElementById('question_id').value = responseData.data.question_id;
+                    document.querySelector('.answers-container').style.display = 'none';
+
                     document.getElementById('label-a').innerHTML = 'a: ' + responseData.data.a;
                     document.getElementById('label-b').innerHTML = 'b: ' + responseData.data.b;
                     document.getElementById('label-c').innerHTML = 'c: ' + responseData.data.c;
@@ -378,6 +404,11 @@
                                 questionSecondsRemaining = Math.max(remainingTime, 0);
                                 document.getElementById('question-timer').innerHTML =
                                     questionSecondsRemaining;
+                                if (({{ $test->question_time }} - show_answers_delay) >
+                                    questionSecondsRemaining) {
+                                    document.querySelector('.answers-container').style.display =
+                                        'block';
+                                }
                                 if (questionSecondsRemaining <= 0) {
                                     clearInterval(questionTimer);
                                     correctAnswer(questionId);

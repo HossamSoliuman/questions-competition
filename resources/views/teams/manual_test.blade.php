@@ -183,9 +183,6 @@
             }, 1000);
         }
 
-        // Call the startQuestionInterval function to initiate the process
-
-        // Call the startQuestionInterval function to initiate the process
         function getQuestion() {
             var myRequest = new XMLHttpRequest();
             myRequest.onreadystatechange = function() {
@@ -205,10 +202,10 @@
                         return;
                     }
 
-                    var serverTime = new Date(responseData.data.server_time).getTime(); // Get server time
+                    var serverTime = new Date(responseData.data.server_time).getTime();
                     var startTime = new Date(responseData.data.question_start_at).getTime();
                     var endTime = startTime + ({{ $test->question_time }} * 1000);
-                    var remainingTime = endTime - serverTime; // Calculate remaining time based on server time
+                    var remainingTime = endTime - serverTime;
                     remainingTime = Math.ceil(remainingTime / 1000);
                     questionSecondsRemaining = Math.max(remainingTime, 0);
 
@@ -220,10 +217,11 @@
                         }, 1000)
                         return;
                     }
-
                     var questionId = responseData.data.id;
+                    var show_answers_delay = responseData.data.show_answers_delay;
                     document.getElementById('question').innerHTML = responseData.data.name;
                     document.getElementById('question_id').value = responseData.data.question_id;
+                    document.querySelector('.answers-container').style.display = 'none';
                     document.getElementById('label-a').innerHTML = 'a: ' + responseData.data.a;
                     document.getElementById('label-b').innerHTML = 'b: ' + responseData.data.b;
                     document.getElementById('label-c').innerHTML = 'c: ' + responseData.data.c;
@@ -251,6 +249,11 @@
                                     serverTime;
                                 remainingTime = Math.ceil(remainingTime / 1000);
                                 questionSecondsRemaining = Math.max(remainingTime, 0);
+                                if (({{ $test->question_time }} - show_answers_delay) >
+                                    questionSecondsRemaining) {
+                                    document.querySelector('.answers-container').style.display =
+                                        'block';
+                                }
                                 document.getElementById('question-timer').innerHTML =
                                     questionSecondsRemaining;
                                 if (questionSecondsRemaining <= 0) {

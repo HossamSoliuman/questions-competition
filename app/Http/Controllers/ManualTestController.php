@@ -19,8 +19,10 @@ class ManualTestController extends Controller
 {
     use ApiResponse;
     public $current_server_time;
+    public $show_answers_delay;
     public function __construct()
     {
+        $this->show_answers_delay = env('show_answers_delay');
         $this->current_server_time = Carbon::now()->setTimezone('Asia/Bahrain');
     }
     public function index(Test $test)
@@ -140,9 +142,12 @@ class ManualTestController extends Controller
         }
         $question = Question::find($currentTest->question_id);
         $data = $question;
+        $question->load('category');
         if ($currentTest) {
             $data['question_start_at'] = $currentTest->question_start_at;
             $data['question_id'] = $currentTest->question_id;
+            $data['show_answers_delay'] = $this->show_answers_delay;
+            $data['category'] = $question->category->name;
             $data['server_time'] = Carbon::now()->setTimezone('Asia/Bahrain')->toDateTimeString();
         }
         return $this->successResponse($data);

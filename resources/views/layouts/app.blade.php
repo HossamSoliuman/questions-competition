@@ -22,7 +22,7 @@
 
         .logo-container {
             position: absolute;
-            height: 10%;
+            height: 5%;
             width: auto;
             top: 0;
             right: 0;
@@ -34,7 +34,6 @@
      <style>
         .badge {
             font-size: 20px;
-            /* Adjust the font size as needed */
         }
     </style>
 
@@ -44,7 +43,7 @@
 <body>
     <div class="container-fluid">
         <div class="logo-container">
-            <img style="width: 120px" src="{{ asset('logo2.png') }}" alt="Logo">
+            <img style="width: 80px" src="{{ asset('logo.png') }}" alt="Logo">
         </div>
         <div class="row">
             @yield('sidebar')
