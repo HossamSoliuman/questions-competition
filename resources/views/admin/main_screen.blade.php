@@ -7,7 +7,7 @@
         }
 
         .background-image-container {
-            background-image: url('{{ asset('logo.png') }}');
+            background-image: url('{{ asset('logo2.png') }}');
             background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
@@ -84,7 +84,7 @@
                     </div>
                 </div>
 
-                <div class="row justify-content-center">
+                <div class="row justify-content-center" >
                     <div class="col-md-6">
                         <div class="card test-card mb-5" id="test-{{ $test->id }}-1">
                             <div class="card-header">
