@@ -17,10 +17,14 @@
             width: 100%;
             z-index: 4;
         }
+
+        .a {
+            z-index: 9999;
+        }
     </style>
+    <a class="text-center d-block" href="{{ route('admin.index') }}">الخروج من الشاشة الرئيسية</a>
 
     <div class="background-image-container"></div>
-
 
     <div class="row justify-content-center">
         <div class="col-md-12">
@@ -28,9 +32,6 @@
                 <h1 class="display-4 text-center">{{ $test->group->competition->name }}</h1>
                 <p class="text-center">وقت السؤال {{ $test->question_time }} ثانية</p>
                 <p class="text-center">وقت الإجابة {{ $test->answer_time }} ثانية</p>
-                <p class="text-center">
-                    <a href="{{ route('admin.index') }}">الخروج من الشاشة الرئيسية</a>
-                </p>
             </div>
             <div class="container">
                 <div class="row">
@@ -83,8 +84,8 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col mr-3">
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
                         <div class="card test-card mb-5" id="test-{{ $test->id }}-1">
                             <div class="card-header">
                                 <h3 class="test-title text-center">{{ $test->name }}</h3>
@@ -112,7 +113,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col-md-6">
                         @include('admin.main_screen_teams_view')
                     </div>
                 </div>
@@ -391,10 +392,10 @@
                     document.getElementById('question_id').value = responseData.data.question_id;
                     document.querySelector('.answers-container').style.display = 'none';
 
-                    document.getElementById('label-a').innerHTML = 'a: ' + responseData.data.a;
-                    document.getElementById('label-b').innerHTML = 'b: ' + responseData.data.b;
-                    document.getElementById('label-c').innerHTML = 'c: ' + responseData.data.c;
-                    document.getElementById('label-d').innerHTML = 'd: ' + responseData.data.d;
+                    document.getElementById('label-a').innerHTML = responseData.data.a;
+                    document.getElementById('label-b').innerHTML = responseData.data.b;
+                    document.getElementById('label-c').innerHTML = responseData.data.c;
+                    document.getElementById('label-d').innerHTML = responseData.data.d;
 
                     document.querySelector('.test-questions').style.display = 'block';
                     document.querySelector('.answer-info').style.display = 'none';

@@ -19,9 +19,8 @@
                     <form id="testForm" action="{{ route('manual-test.sendAnswer', ['test' => $test->id]) }}"
                         method="post">
                         @csrf
-
-                        <h3 class="text-center" id="category">category</h3>
-                        <h3 class="question text-right" id="question">Question</h3>
+                        <h3 class="text-center" style="font-size: larger; font-weight: bold;" id="category">category</h3>
+                        <h3 class="mt-5 question text-right" style="font-size: larger; font-weight: bold;" id="question">Question</h3>
                         <div class="answers-container">
                             <input type="hidden" name="question_id" id="question_id" value="">
                             <input type="hidden" name="team_id" value="{{ $team_id }}">
@@ -102,7 +101,6 @@
             border: 1px solid #dee2e6;
             border-radius: 10px;
             padding: 30px;
-            /* Increase padding for the question container */
             margin-top: 50px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }

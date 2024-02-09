@@ -159,7 +159,7 @@ class ManualTestController extends Controller
         $question = Question::find($question);
         $data = [
             'name' => $question->name,
-            'correct_answer' => $question->correct_answer . ') ' . $question[$question->correct_answer],
+            'correct_answer' =>$question[$question->correct_answer],
         ];
         $TestQuestion = QuestionTest::where('test_id', $test)->where('question_id', $question->id)->first();
         $isAnswered = $TestQuestion->answered;
