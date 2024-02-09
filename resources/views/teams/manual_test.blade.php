@@ -224,10 +224,10 @@
                     document.getElementById('question').innerHTML = responseData.data.name;
                     document.getElementById('question_id').value = responseData.data.question_id;
                     document.querySelector('.answers-container').style.display = 'none';
-                    document.getElementById('label-a').innerHTML = 'a: ' + responseData.data.a;
-                    document.getElementById('label-b').innerHTML = 'b: ' + responseData.data.b;
-                    document.getElementById('label-c').innerHTML = 'c: ' + responseData.data.c;
-                    document.getElementById('label-d').innerHTML = 'd: ' + responseData.data.d;
+                    document.getElementById('label-a').innerHTML = responseData.data.a;
+                    document.getElementById('label-b').innerHTML = responseData.data.b;
+                    document.getElementById('label-c').innerHTML = responseData.data.c;
+                    document.getElementById('label-d').innerHTML = responseData.data.d;
 
                     enableFormInputs()
 

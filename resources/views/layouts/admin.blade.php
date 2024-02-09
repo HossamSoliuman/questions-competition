@@ -41,7 +41,7 @@
 <body>
     <div class="container-fluid">
         <div class="logo-container">
-            <img style="width: 80px" src="{{ asset('logo.png') }}" alt="Logo">
+            <img style="width: 80px" src="{{ asset('logo2.png') }}" alt="Logo">
         </div>
         <div class="row">
             @include('layouts.sidebar')
