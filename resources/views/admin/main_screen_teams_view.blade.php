@@ -20,8 +20,8 @@
                         method="post">
                         @csrf
 
-                        <h3 class="category" id="category">category</h3>
-                        <h3 class="question" id="question">Question</h3>
+                        <h3 class="text-center" id="category">category</h3>
+                        <h3 class="question text-right" id="question">Question</h3>
                         <div class="answers-container">
                             <input type="hidden" name="question_id" id="question_id" value="">
                             <input type="hidden" name="team_id" value="{{ $team_id }}">

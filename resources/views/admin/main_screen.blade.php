@@ -93,6 +93,12 @@
                                 <p class="test-start" id="start-time-{{ $test->id }}">Starts: {{ $test->start_time }}
                                 </p>
                                 <ul class="list-group team-list">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span class="badge badge-primary badge-pill">الترتيب</span>
+                                        <span class="team-name" style="font-size: larger; font-weight: bold;">الفريق</span>
+                                        <span class="badge badge-success badge-pill">النقاط</span>
+                                    </li>
+                                    <hr class="my-1">
                                     @foreach ($test->group->teams->sortByDesc('pivot.points') as $team)
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
                                             <span class="badge badge-primary badge-pill">{{ $loop->iteration }}</span>
@@ -126,7 +132,13 @@
                     if (response.data && response.data.currentTests && Array.isArray(response.data
                             .currentTests)) {
                         var testElement = $('#test-' + testId + '-' + loopIndex);
-                        var teamListHtml = '';
+                        var teamListHtml =
+                            '<li class="list-group-item d-flex justify-content-between align-items-center">' +
+                            '<span class="badge badge-primary badge-pill">الترتيب</span>' +
+                            '<span style="font-size: larger; font-weight: bold;" class="team-name">الفريق</span>' +
+                            '<span class="badge badge-success badge-pill">النقاط</span>' +
+                            '</li>' +
+                            '<hr class="my-1">';
 
                         $.each(response.data.currentTests, function(_, test) {
                             testElement.find('#start-time-' + testId).text('Starts: ' + test
