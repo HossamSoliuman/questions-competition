@@ -50,12 +50,12 @@
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <div class="bg-white p-3 rounded shadow">
-                                                <span id="b" style="font-size: 1.2em;"></span> :B
+                                                <span id="b" style="font-size: 1.2em;"></span>
                                             </div>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <div class="bg-white p-3 rounded shadow">
-                                                <span id="a" style="font-size: 1.2em;"></span> :A
+                                                <span id="a" style="font-size: 1.2em;"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -63,20 +63,20 @@
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <div class="bg-white p-3 rounded shadow">
-                                                <span id="d" style="font-size: 1.2em;"></span> :D
+                                                <span id="d" style="font-size: 1.2em;"></span>
                                             </div>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <div class="bg-white p-3 rounded shadow">
-                                                <span id="c" style="font-size: 1.2em;"></span> :C
+                                                <span id="c" style="font-size: 1.2em;"></span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div id="audiences-answer-container" class="bg-light p-4 rounded shadow mb-4 ">
-                                    <p style="font-size: 2.2em;" class="mb-0"><span id="audience-correct-answer"
-                                            class="font-weight-bold text-success"></span> : الإجابة الصحيحة هي</p>
+                                    <p style="font-size: 2.2em;" class="mb-0 text-right"> الإجابة الصحيحة هي: <span id="audience-correct-answer"
+                                            class="font-weight-bold text-success"></span></p>
                                 </div>
                             </div>
 
@@ -196,7 +196,6 @@
                             $('#audiences-answer-container').hide();
                             $('#audiences-question-container').hide();
                             $('#randomNumberBox').hide();
-
                             return;
                         }
                         if (response.data.random_number != 0) {

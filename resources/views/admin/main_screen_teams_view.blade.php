@@ -21,7 +21,7 @@
                         @csrf
                         <h3 class="text-center" style="font-size: larger; font-weight: bold;" id="category">category
                         </h3>
-                        <h3 class="mt-5 question text-right" style="font-size: larger; font-weight: bold;"
+                        <h3 class="mt-5 question text-right"  style="font-size: larger; font-weight: bold;"
                             id="question">Question</h3>
                         <div class="answers-container">
                             <input type="hidden" name="question_id" id="question_id" value="">

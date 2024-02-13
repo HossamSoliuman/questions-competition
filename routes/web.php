@@ -55,6 +55,7 @@ Route::get('tm', TmController::class);
 //     ]);
 // });
 
+Route::get('test/{test}', [ManualTestController::class, 'getAudienceQuestions']);
 Route::middleware('auth')->group(function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/', [HomeController::class, 'index'])->name('index');

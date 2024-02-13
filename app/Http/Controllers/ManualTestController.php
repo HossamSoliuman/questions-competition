@@ -159,7 +159,7 @@ class ManualTestController extends Controller
         $question = Question::find($question);
         $data = [
             'name' => $question->name,
-            'correct_answer' =>$question[$question->correct_answer],
+            'correct_answer' => $question[$question->correct_answer],
         ];
         $TestQuestion = QuestionTest::where('test_id', $test)->where('question_id', $question->id)->first();
         $isAnswered = $TestQuestion->answered;
@@ -224,16 +224,23 @@ class ManualTestController extends Controller
         return view('admin.main_screen', compact('test', 'team_id', 'answerSubmitted', 'test_time_remaining_seconds'));
     }
 
-
     public function getAudienceQuestions(Test $test)
     {
         $audienceQuestion = CurrentAudienceQuestion::with('question')->where('test_id', $test->id)->first();
 
         if (!$audienceQuestion) {
             $audienceQuestion = null;
+        } else {
+            if ($audienceQuestion->question) {
+                $correctAnswer = $audienceQuestion->question->correct_answer;
+                $correctAnswer = $audienceQuestion->question->{$correctAnswer};
+                $audienceQuestion->question->correct_answer = $correctAnswer;
+            }
         }
+
         return $this->successResponse($audienceQuestion);
     }
+
     public function setRandomAudienceNumber(Request $request, $test)
     {
 
