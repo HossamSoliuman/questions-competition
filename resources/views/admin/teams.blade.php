@@ -28,7 +28,7 @@
                                             placeholder="Team Name" required>
                                     </div>
                                     <div class="form-group">
-                                        <input type="email" name="email" class="form-control"
+                                        <input type="text" name="email" class="form-control"
                                             placeholder="Team Email" required>
                                     </div>
                                     <div class="form-group">
@@ -86,7 +86,7 @@
                     <thead>
                         <tr>
                             <th>Team Name</th>
-                            <th>Team Email</th>
+                            <th>Team Username</th>
                             <th>Team Password</th>
                             <th>Actions</th>
                         </tr>
@@ -106,7 +106,7 @@
                                         method="post">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class=" ml-3 btn btn-danger">Delete</button>
+                                        <button type="submit" class="ml-3 btn btn-danger">Delete</button>
                                     </form>
                                 </td>
                             </tr>

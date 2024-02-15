@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -41,7 +40,7 @@
 <body>
     <div class="container-fluid">
         <div class="logo-container">
-            <img style="width: 80px" src="{{ asset('logo2.png') }}" alt="Logo">
+            <img style="width: 100px" src="{{ asset('logo2.png') }}" alt="Logo">
         </div>
         <div class="row">
             @include('layouts.sidebar')

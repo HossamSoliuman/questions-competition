@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+    <br/>
     <form action="{{ route('logout') }}" method="post">
         @csrf
         <button type="submit" class="btn btn-danger btn-block mb-4">Logout</button>
@@ -9,8 +10,8 @@
     <div class="test-info text-center">
         <h2>{{ $test->name }}</h2>
         <p id="countdown"></p>
-        <p> Question time {{ $test->question_time }} seconds</p>
-        <p> Answer time {{ $test->answer_time }} seconds</p>
+        {{--<p> Question time {{ $test->question_time }} seconds</p>
+        <p> Answer time {{ $test->answer_time }} seconds</p>--}}
         <p style="display: none"> group id {{ $test->group_id }} </p>
     </div>
 
@@ -57,7 +58,7 @@
                             </label>
                         </div>
 
-                        <input class="btn btn-danger btn-answer" type="submit" value="Answer"
+                        <input class="btn btn-danger btn-answer" type="submit" align="center" value="Answer"
                             {{ $answerSubmitted ? 'disabled' : '' }}>
                     </div>
                 </form>

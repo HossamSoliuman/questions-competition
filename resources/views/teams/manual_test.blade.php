@@ -1,84 +1,92 @@
 @extends('layouts.app')
 
 @section('content')
+    <br/>
     <form action="{{ route('logout') }}" method="post">
         @csrf
-        <button type="submit" class="btn btn-danger btn-block mb-4">Logout</button>
+        <button type="submit" class="btn btn-danger btn-block mb-4">تسجيل خروج</button>
     </form>
 
-    <div class="test-info text-center">
-        <h1 class="text-center">{{ $team_name }}</h1>
-        <h2>{{ $test->name }}</h2>
+    <div class="test-info text-center" dir='rtl'>
+        <h1 class="text-center" style="color : #9F8C76">{{ $team_name }}</h1>
+        <h2 Style="color:#C19A6B">{{ $test->name }}</h2>
         <p id="countdown"></p>
-        <p> Question time {{ $test->question_time }} seconds</p>
+        {{--<p> Question time {{ $test->question_time }} seconds</p>
         <p> Answer time {{ $test->answer_time }} seconds</p>
+        <p class="text-center">وقت السؤال {{ $test->question_time }} ثانية</p>
+        <p class="text-center">وقت الإجابة {{ $test->answer_time }} ثانية</p>--}}
         <p style="display: none"> group id {{ $test->group_id }} </p>
     </div>
 
     {{-- question form start --}}
-    <div class="test-questions">
-        <div class="col-md-6 offset-md-3">
-            <div class="question-container">
-                <div class="timer-container">
-                    <div class="timer" id="question-timer">25</div>
-                </div>
-                <form id="testForm" action="{{ route('manual-test.sendAnswer', ['test' => $test->id]) }}" method="post">
-                    @csrf
-                    <h3 class="question text-center" id="category">Category</h3>
-                    <h3 class="question" id="question">Question</h3>
-                    <div class="answers-container">
-                        <input type="hidden" name="question_id" id="question_id" value="">
-                        <input type="hidden" name="team_id" value="{{ $team_id }}">
-
-                        <div class="answer-row">
-                            <label for="answer-a" class="btn btn-primary btn-answer mr-3">
-                                <input type="radio" name="answer" id="answer-a" value="a"
-                                    {{ $answerSubmitted ? 'disabled' : '' }}>
-                                <label for="answer-a" id="label-a">Answer 1</label>
-                            </label>
-                            <label for="answer-b" class="btn btn-primary btn-answer mr-3">
-                                <input type="radio" name="answer" id="answer-b" value="b"
-                                    {{ $answerSubmitted ? 'disabled' : '' }}>
-                                <label for="answer-b" id="label-b">Answer 2</label>
-                            </label>
-                        </div>
-
-                        <div class="answer-row">
-                            <label for="answer-c" class="btn btn-primary btn-answer mr-3">
-                                <input type="radio" name="answer" id="answer-c" value="c"
-                                    {{ $answerSubmitted ? 'disabled' : '' }}>
-                                <label for="answer-c" id="label-c">Answer 3</label>
-                            </label>
-                            <label for="answer-d" class="btn btn-primary btn-answer">
-                                <input type="radio" name="answer" id="answer-d" value="d"
-                                    {{ $answerSubmitted ? 'disabled' : '' }}>
-                                <label for="answer-d" id="label-d">Answer 4</label>
-                            </label>
-                        </div>
-
-                        <input class="btn btn-danger btn-answer" type="submit" value="Answer"
-                            {{ $answerSubmitted ? 'disabled' : '' }}>
+    <div class="row justify-content-center" dir='rtl'>
+        <div class="test-questions">
+            <div class="col">
+                <div class="question-container">
+                    <div class="timer-container">
+                        <div class="timer" id="question-timer">25</div>
                     </div>
-                </form>
+                    <form id="testForm" action="{{ route('manual-test.sendAnswer', ['test' => $test->id]) }}" method="post">
+                        @csrf
+                        {{--<h3 class="question text-center" id="category">Category</h3>
+                        <h3 class="question mt-5 text-right" id="question">Question</h3>--}}
+                        <h2 class="text-center" style="font-size: 6mm; font-weight: bold; color:#9F8C76" id="category">category</h2>
+                        <h3 class="mt-5 question text-right" style="font-size: 5mm; font-weight: bold; color:#C19A6B" id="question">Question</h3>                    
+                        <div class="answers-container">
+                            <input type="hidden" name="question_id" id="question_id" value="">
+                            <input type="hidden" name="team_id" value="{{ $team_id }}">
+    
+                            <div class="answer-row">
+                                <label for="answer-a" class="btn btn-light btn-answer mr-3" style="color:#786D5F; font-size:6mm; font-weight:bold">
+                                    <input type="radio" name="answer" id="answer-a" value="a"
+                                        {{ $answerSubmitted ? 'disabled' : '' }}>
+                                    <label for="answer-a" id="label-a">Answer 1</label>
+                                </label>
+                                <label for="answer-b" class="btn btn-light btn-answer mr-3" style="color:#786D5F; font-size:6mm; font-weight:bold">
+                                    <input type="radio" name="answer" id="answer-b" value="b"
+                                        {{ $answerSubmitted ? 'disabled' : '' }}>
+                                    <label for="answer-b" id="label-b">Answer 2</label>
+                                </label>
+                            </div>
+    
+                            <div class="answer-row">
+                                <label for="answer-c" class="btn btn-light btn-answer mr-3" style="color:#786D5F; font-size:6mm; font-weight:bold">
+                                    <input type="radio" name="answer" id="answer-c" value="c"
+                                        {{ $answerSubmitted ? 'disabled' : '' }}>
+                                    <label for="answer-c" id="label-c">Answer 3</label>
+                                </label>
+                                <label for="answer-d" class="btn btn-light btn-answer mr-3" style="color:#786D5F; font-size:6mm; font-weight:bold">
+                                    <input type="radio" name="answer" id="answer-d" value="d"
+                                        {{ $answerSubmitted ? 'disabled' : '' }}>
+                                    <label for="answer-d" id="label-d">Answer 4</label>
+                                </label>
+                            </div>
+                            <div class="text-center">    
+                                <input class="btn btn-danger btn-answer" type="submit" value="إعتمد الإجابة"
+                                {{ $answerSubmitted ? 'disabled' : '' }}>
+                            </div>
+                        </div>
+                    </form>
+                </div>    
             </div>
         </div>
     </div>
     {{-- question form end --}}
 
-    <div class="answer-info">
-        <div class="col-md-6 offset-md-3">
-            <div class="question-container">
-                <div class="timer-container">
-                    <div class="timer" id="answer-timer">25</div>
-                </div>
-
-                <h3 class="question" id="corrcorrect-team-answer">
-                    </h2>
-                    <h3 class="question" id="answer-question"></h3>
-                    <p class="btn btn-primary btn-answer mr-3" id="correct-answer"></p>
-            </div>
-        </div>
-    </div>
+    <div class="row justify-content-center" dir='rtl'> 
+	    <div class="col text-center">
+		    <div class="answer-info">
+			    <div class="question-container">                        
+				    <div class="timer-container">
+					    <div class="timer" id="answer-timer">25</div>
+				    </div>
+				    <h3 class="question" style="font-size: 5mm; font-weight: bold; color:#9F8C76" id="corrcorrect-team-answer"></h3>
+				    {{--<h3 class="question" style="font-size: 5mm; font-weight: bold; color:#C19A6B" id="answer-question"></h3>--}}
+				    <p class="btn btn-light mr-3" style="color:#786D5F; font-size:6mm; font-weight:bold" id="correct-answer"></p>
+			    </div>
+		    </div>
+	    </div>
+	</div>
 @endsection
 @section('scripts')
     <script>
@@ -110,7 +118,7 @@
                             'Time remaining: ' + days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
                         setTimeout(updateCountdown, 1000);
                     } else {
-                        document.getElementById('countdown').innerHTML = 'Test has started!';
+                        //document.getElementById('countdown').innerHTML = 'بدأ الإختبار';
                         var questionStartTime = new Date('{{ $test->question_start_at }}').getTime();
                         var remainingTime = questionStartTime - serverTime;
                         var questionRemaining = Math.max(remainingTime, 0);
@@ -142,10 +150,10 @@
                     var responseData = JSON.parse(this.responseText);
 
 
-                    document.getElementById('answer-question').innerHTML = responseData.data.name;
-                    document.getElementById('correct-answer').innerHTML = 'Correct Answer: ' + responseData.data
+                    {{--document.getElementById('answer-question').innerHTML = responseData.data.name;--}}
+                    document.getElementById('correct-answer').innerHTML = 'الإجابة الصحيحة هي: ' + responseData.data
                         .correct_answer;
-                    document.getElementById('corrcorrect-team-answer').innerHTML = 'First Correct Team Answer: ' +
+                    document.getElementById('corrcorrect-team-answer').innerHTML = 'الإجابة الأسرع للفريق: ' +
                         responseData.data.corrcorrectTeamAnswer;
 
 
@@ -228,7 +236,6 @@
                     document.getElementById('label-b').innerHTML = responseData.data.b;
                     document.getElementById('label-c').innerHTML = responseData.data.c;
                     document.getElementById('label-d').innerHTML = responseData.data.d;
-
                     enableFormInputs()
 
                     document.querySelector('.test-questions').style.display = 'block';
@@ -354,12 +361,11 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-
-        .question {
+        /*.question {
             font-size: 18px;
             font-weight: bold;
             margin-bottom: 20px;
-        }
+        }*/
 
         .timer-container {
             border-radius: 50%;
@@ -389,13 +395,12 @@
 
         .answer-row {
             display: flex;
-            margin-bottom: 10px;
         }
 
-        .answer {
+        /*.answer {
             flex: 1;
             box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-        }
+        }*/
 
         .btn-answer {
             width: 100%;

@@ -89,4 +89,5 @@ class TeamController extends LichtBaseController
         $user->delete();
         return redirect()->route('teams.index');
     }
+    
 }

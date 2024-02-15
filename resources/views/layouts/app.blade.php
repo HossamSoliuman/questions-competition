@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Quiz</title>
+    <title>حسينية أهالي دمستان</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css">
@@ -41,7 +40,7 @@
 <body>
     <div class="container-fluid">
         <div class="logo-container">
-            <img style="width: 80px" src="{{ asset('logo2.png') }}" alt="Logo">
+            <img style="width: 100px" src="{{ asset('logo2.png') }}" alt="Logo">
         </div>
         @yield('content')
     </div>

@@ -55,7 +55,6 @@ Route::get('tm', TmController::class);
 //     ]);
 // });
 
-Route::get('test/{test}', [ManualTestController::class, 'getAudienceQuestions']);
 Route::middleware('auth')->group(function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/', [HomeController::class, 'index'])->name('index');
@@ -138,3 +137,7 @@ Route::middleware(['auth', 'single.device'])->group(function () {
 Route::get('/get-server-time', function () {
     return response()->json(['server_time' => Carbon::now()->setTimezone('Asia/Bahrain')->toDateTimeString()]);
 });
+
+    Route::get('/logout',function(){
+        return redirect()->route('login');
+    });

@@ -20,10 +20,12 @@ class ManualTestController extends Controller
     use ApiResponse;
     public $current_server_time;
     public $show_answers_delay;
+    public $max_correct_answers;
     public function __construct()
     {
         $this->show_answers_delay = env('show_answers_delay');
         $this->current_server_time = Carbon::now()->setTimezone('Asia/Bahrain');
+        $this->max_correct_answers = env('max_correct_answers');
     }
     public function index(Test $test)
     {
@@ -178,7 +180,6 @@ class ManualTestController extends Controller
         return $this->successResponse($data);
     }
 
-
     public function sendAnswer(Request $request, Test $test)
     {
         if (session('lastAnswer') == $request->question_id)
@@ -187,20 +188,21 @@ class ManualTestController extends Controller
         $question = Question::find($request->question_id);
         $correctAnswer = $question->correct_answer;
         $correctAnswer = strtolower($correctAnswer);
+        $numberOfGroupTeams = GroupTeam::where('group_id', $test->group_id)->count();
         $isCorrect = $correctAnswer == $request->answer ? 1 : 0;
         if ($isCorrect) {
             $TestQuestion = QuestionTest::where('Test_id', $test->id)->where('question_id', $request->question_id)->first();
-            $isAnswered = $TestQuestion->answered;
-            if (!$isAnswered) {
-                $TestQuestion->update([
-                    'answered' => 1,
-                    'team_id' => $request->team_id,
-                ]);
+            $Answered = $TestQuestion->answered;
+            if ($Answered < $numberOfGroupTeams) {
+                if ($Answered == 0) {
+                    $TestQuestion->update(['answered' => $Answered + 1, 'team_id' => $request->team_id,]);
+                } else {
+                    $TestQuestion->update(['answered' => $Answered + 1,]);
+                }
+
                 $group_id = $test->group_id;
                 $groupTeam = GroupTeam::where('group_id', $group_id)->whereTeamId($request->team_id)->first();
-                $groupTeam->update([
-                    'points' => $groupTeam->points + 1,
-                ]);
+                $groupTeam->update(['points' => $groupTeam->points + $numberOfGroupTeams - $Answered,]);
             }
         }
         return;
@@ -224,6 +226,8 @@ class ManualTestController extends Controller
         return view('admin.main_screen', compact('test', 'team_id', 'answerSubmitted', 'test_time_remaining_seconds'));
     }
 
+
+
     public function getAudienceQuestions(Test $test)
     {
         $audienceQuestion = CurrentAudienceQuestion::with('question')->where('test_id', $test->id)->first();
@@ -240,7 +244,6 @@ class ManualTestController extends Controller
 
         return $this->successResponse($audienceQuestion);
     }
-
     public function setRandomAudienceNumber(Request $request, $test)
     {
 

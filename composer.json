@@ -14,7 +14,6 @@
         "laravel/tinker": "^2.7",
         "laravel/ui": "^4.2",
         "league/csv": "^9.14",
-        "maatwebsite/excel": "^1.1",
         "nesbot/carbon": "^2.72"
     },
     "require-dev": {

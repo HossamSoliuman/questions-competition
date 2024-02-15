@@ -76,7 +76,7 @@
                     </div>
 
                     <h3 class="question" id="corrcorrect-team-answer">
-                        </h2>
+                        </h3>
                         <h3 class="question" id="answer-question"></h3>
                         <p class="btn btn-primary btn-answer mr-3" id="correct-answer"></p>
                 </div>
