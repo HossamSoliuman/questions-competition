@@ -109,7 +109,7 @@ class ManualTestController extends Controller
     {
         $testQuestion = QuestionTest::where('test_id', $test_id)->where('question_id', $question_id)->first();
         $testQuestion->update([
-            'set' => 1,
+            'set' => 0,
         ]);
         $question = Question::find($question_id);
         $question->update([
@@ -158,6 +158,7 @@ class ManualTestController extends Controller
 
     public function correctAnswer($question, $test)
     {
+        $isTeamAnswered = 0;
         $question = Question::find($question);
         $data = [
             'name' => $question->name,
@@ -174,9 +175,11 @@ class ManualTestController extends Controller
         $correctTeamAnswer = Team::find($correctTeamAnswerId);
         if ($correctTeamAnswer != null) {
             $corrcorrectTeamAnswer = $correctTeamAnswer->name;
+            $isTeamAnswered = 1;
         } else
             $corrcorrectTeamAnswer = 'no one';
         $data['corrcorrectTeamAnswer'] = $corrcorrectTeamAnswer;
+        $data['isTeamAnswered'] = $isTeamAnswered;
         return $this->successResponse($data);
     }
 

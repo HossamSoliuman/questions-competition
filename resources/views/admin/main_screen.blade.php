@@ -5,6 +5,7 @@
             margin: 0;
             padding: 0;
         }
+
         .background-image-container {
             background-image: url('{{ asset('logo2.png') }}');
             background-size: contain;
@@ -20,107 +21,116 @@
         .a {
             z-index: 9999;
         }
-  </style>
     </style>
+    </style>
+    <audio id="teamAnsweredSound">
+        <source src="{{ asset('teamAnsweredSound.mp3') }}" type="audio/mpeg">
+    </audio>
+    <audio id="noTeamAnsweredSound">
+        <source src="{{ asset('noTeamAnsweredSound.mp3') }}" type="audio/mpeg">
+    </audio>
     <a class="text-center d-block" href="{{ route('admin.index') }}">الخروج من الشاشة الرئيسية</a>
 
     <div class="background-image-container"></div>
 
-   {{-- <div class="row justify-content-center">--}
+    {{-- <div class="row justify-content-center">--}
         <div class="container">
-        {{--<div class="col-md-12">--}}
-            <div class="page-header">
-                <h1 class="display-4 text-center" style="font-size:20mm; font-weight:bold; color:#9F8C76">{{ $test->group->competition->name }}</h1>
-                {{--<p class="text-center">وقت السؤال {{ $test->question_time }} ثانية</p>
-                <p class="text-center">وقت الإجابة {{ $test->answer_time }} ثانية</p>--}}
-                <br/>
-                <br/>
-            </div>
-            {{--<div class="row">--}}
-            {{--<div class="container">--}}
-            {{--<div class="row">--}}
-                        <div class="row justify-content-center">
-                            <div id="randomNumberBox" class="col-md-6 bg-info text-white p-3 rounded shadow mb-4 text-center">
-                                <p class="mb-0" style="font-size: 2em;">رقم عشوائي: <span class="font-weight-bold"
-                                        id="randomNumber"></span></p>
-                            </div>
-                            <div class="col-md-10 text-center">
-                                <div id="audiences-question-container" class="bg-light p-4 rounded shadow mb-4 ">
-                                    <h2 class="section-title text-center" style="font-size: 1.5em; font-weight:bold">أسئلة الجمهور</h2>
-                                    <h3 id="audienceQuestion" class="text-primary mb-4 text-right"></h3>
+        {{-- <div class="col-md-12"> --}}
+    <div class="page-header">
+        <h1 class="display-4 text-center" style="font-size:20mm; font-weight:bold; color:#9F8C76">
+            {{ $test->group->competition->name }}</h1>
+        {{-- <p class="text-center">وقت السؤال {{ $test->question_time }} ثانية</p>
+                <p class="text-center">وقت الإجابة {{ $test->answer_time }} ثانية</p> --}}
+        <br />
+        <br />
+    </div>
+    {{-- <div class="row"> --}}
+    {{-- <div class="container"> --}}
+    {{-- <div class="row"> --}}
+    <div class="row justify-content-center">
+        <div id="randomNumberBox" class="col-md-6 bg-info text-white p-3 rounded shadow mb-4 text-center">
+            <p class="mb-0" style="font-size: 2em;">رقم عشوائي: <span class="font-weight-bold" id="randomNumber"></span>
+            </p>
+        </div>
+        <div class="col-md-10 text-center">
+            <div id="audiences-question-container" class="bg-light p-4 rounded shadow mb-4 ">
+                <h2 class="section-title text-center" style="font-size: 1.5em; font-weight:bold">أسئلة الجمهور</h2>
+                <h3 id="audienceQuestion" class="text-primary mb-4 text-right"></h3>
 
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <div class="bg-white p-3 rounded shadow">
-                                                <span id="b" style="font-size: 1.2em;"></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="bg-white p-3 rounded shadow">
-                                                <span id="a" style="font-size: 1.2em;"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <div class="bg-white p-3 rounded shadow">
-                                                <span id="d" style="font-size: 1.2em;"></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="bg-white p-3 rounded shadow">
-                                                <span id="c" style="font-size: 1.2em;"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div id="audiences-answer-container" class="bg-light p-4 rounded shadow mb-4 ">
-                                    <p style="font-size: 2.2em;" class="mb-0"><span id="audience-correct-answer"
-                                            class="font-weight-bold text-success"></span> : الإجابة الصحيحة هي</p>
-                                </div>
-                            </div>
-                        </div>
-                    
-                <div class="row justify-content-center">
-                    {{--<div class="row">--}}
-                    {{--<div class="col-md-6">--}}
-                    <div class="col-md-5">
-                        {{--<div class="card test-card mb-5" id="test-{{ $test->id }}-1" style="border: 3px solid black">--}}
-                        <div class="card test-card mb-5" id="test-{{ $test->id }}-1">
-                            <div class="card-header">
-                                <h3 class="test-title text-center" style="font-size:10mm; font-weight: bold; color : #9F8C76">{{ $test->name }}</h3>
-                            </div>
-                            <div class="card-body">
-                                {{--<p class="test-start" id="start-time-{{ $test->id }}">Starts: {{ $test->start_time }}
-                                </p>--}}
-                                <ul class="list-group team-list">
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <span class="badge badge-light badge-pill">الترتيب</span>
-                                        {{--<span class="team-name" style="font-size: larger; font-weight: bold;">الفريق</span>--}}
-                                        <span class="badge badge-warning badge-pill">النقاط</span>
-                                    </li>
-                                    <hr class="my-1">
-                                    @foreach ($test->group->teams->sortByDesc('pivot.points') as $team)
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            <span class="badge badge-light badge-pill">{{ $loop->iteration }}</span>
-                                            <span class="team-name" style="font-size: 10mm; font-weight: bold; color:#C19A6B">{{ $team->name }}</span>
-                                            <span class="badge badge-warning badge-pill">{{ $team->pivot->points }}</span>
-                                        </li>
-                                        <hr class="my-1">
-                                    @endforeach
-                                </ul>
-                            </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="bg-white p-3 rounded shadow">
+                            <span id="b" style="font-size: 1.2em;"></span>
                         </div>
                     </div>
-                    {{--<div class="col-md-6">--}}
-                    <div class="col-md-7">
-                        @include('admin.main_screen_teams_view')
+                    <div class="col-md-6 mb-3">
+                        <div class="bg-white p-3 rounded shadow">
+                            <span id="a" style="font-size: 1.2em;"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="bg-white p-3 rounded shadow">
+                            <span id="d" style="font-size: 1.2em;"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="bg-white p-3 rounded shadow">
+                            <span id="c" style="font-size: 1.2em;"></span>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <div id="audiences-answer-container" class="bg-light p-4 rounded shadow mb-4 ">
+                <p style="font-size: 2.2em;" class="mb-0"><span id="audience-correct-answer"
+                        class="font-weight-bold text-success"></span> : الإجابة الصحيحة هي</p>
+            </div>
         </div>
+    </div>
+
+    <div class="row justify-content-center">
+        {{-- <div class="row"> --}}
+        {{-- <div class="col-md-6"> --}}
+        <div class="col-md-5">
+            {{-- <div class="card test-card mb-5" id="test-{{ $test->id }}-1" style="border: 3px solid black"> --}}
+            <div class="card test-card mb-5" id="test-{{ $test->id }}-1">
+                <div class="card-header">
+                    <h3 class="test-title text-center" style="font-size:10mm; font-weight: bold; color : #9F8C76">
+                        {{ $test->name }}</h3>
+                </div>
+                <div class="card-body">
+                    {{-- <p class="test-start" id="start-time-{{ $test->id }}">Starts: {{ $test->start_time }}
+                                </p> --}}
+                    <ul class="list-group team-list">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span class="badge badge-light badge-pill">الترتيب</span>
+                            {{-- <span class="team-name" style="font-size: larger; font-weight: bold;">الفريق</span> --}}
+                            <span class="badge badge-warning badge-pill">النقاط</span>
+                        </li>
+                        <hr class="my-1">
+                        @foreach ($test->group->teams->sortByDesc('pivot.points') as $team)
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span class="badge badge-light badge-pill">{{ $loop->iteration }}</span>
+                                <span class="team-name"
+                                    style="font-size: 10mm; font-weight: bold; color:#C19A6B">{{ $team->name }}</span>
+                                <span class="badge badge-warning badge-pill">{{ $team->pivot->points }}</span>
+                            </li>
+                            <hr class="my-1">
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {{-- <div class="col-md-6"> --}}
+        <div class="col-md-7">
+            @include('admin.main_screen_teams_view')
+        </div>
+    </div>
+    </div>
+    </div>
     </div>
 @endsection
 @section('scripts')
@@ -138,8 +148,7 @@
                         var teamListHtml =
                             '<li class="list-group-item d-flex justify-content-between align-items-center">' +
                             '<span class="badge badge-light badge-pill">الترتيب</span>' +
-                            {{--'<span style="font-size: larger; font-weight: bold;" class="team-name">الفريق</span>' +--}}
-                            '<span class="badge badge-warning badge-pill">النقاط</span>' +
+                            {{-- '<span style="font-size: larger; font-weight: bold;" class="team-name">الفريق</span>' + --}} '<span class="badge badge-warning badge-pill">النقاط</span>' +
                             '</li>' +
                             '<hr class="my-1">';
 
@@ -306,7 +315,7 @@
                     var responseData = JSON.parse(this.responseText);
 
 
-                    {{--document.getElementById('answer-question').innerHTML = responseData.data.name;--}}
+                    {{-- document.getElementById('answer-question').innerHTML = responseData.data.name; --}}
                     document.getElementById('correct-answer').innerHTML = 'الإجابة الصحيحة هي: ' + responseData.data
                         .correct_answer;
                     document.getElementById('corrcorrect-team-answer').innerHTML = 'الإجابة الأسرع للفريق:  ' +
@@ -319,6 +328,12 @@
                     answerSecondsRemaining = {{ $test->answer_time }};
                     updateAnswerTimerDisplay(answerSecondsRemaining);
 
+                    //there is a team answered sound
+                    if (responseData.data.isTeamAnswered) {
+                        document.getElementById('teamAnsweredSound').play();
+                    } else {
+                        document.getElementById('noTeamAnsweredSound').play();
+                    }
                     answerTimer = setInterval(function() {
                         updateAnswerTimerDisplay(--answerSecondsRemaining);
                         if (answerSecondsRemaining <= 0) {
